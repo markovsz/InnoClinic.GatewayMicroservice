@@ -1,9 +1,14 @@
+using Ocelot.DependencyInjection;
+using Ocelot.Middleware;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
-builder.Services.AddSwaggerGen();
+builder.Configuration
+    .AddJsonFile("ocelot.json", false, true);
+
+builder.Services.AddOcelot(builder.Configuration);
 
 var app = builder.Build();
 
@@ -14,10 +19,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
+app.UseOcelot().Wait();
 
 app.Run();
