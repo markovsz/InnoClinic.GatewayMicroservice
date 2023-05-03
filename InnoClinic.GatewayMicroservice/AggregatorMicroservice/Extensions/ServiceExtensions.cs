@@ -1,4 +1,5 @@
-﻿using AggregatorMicroservice.Services;
+﻿using AggregatorMicroservice.FilterAttributes;
+using AggregatorMicroservice.Services;
 using AggregatorMicroservice.Services.Abstractions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -39,5 +40,10 @@ public static class ServiceExtensions
                 ValidateAudience = true
             };
         });
+    }
+
+    public static void ConfigureFilterAttributes(this IServiceCollection services)
+    {
+        services.AddScoped<ExtractRoleAttribute>();
     }
 }

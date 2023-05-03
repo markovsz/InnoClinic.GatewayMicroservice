@@ -10,6 +10,7 @@ builder.Services.AddHttpClient();
 builder.Services.ConfigureServices();
 builder.Services.ConfigureAuthentication(builder.Configuration);
 builder.Services.AddControllers();
+builder.Services.ConfigureFilterAttributes();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
