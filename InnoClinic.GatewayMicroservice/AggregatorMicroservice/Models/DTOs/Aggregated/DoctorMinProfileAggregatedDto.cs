@@ -1,4 +1,4 @@
-﻿using AggregatorMicroservice.Models.DTOs.Outgoing;
+﻿using InnoClinic.SharedModels.DTOs.Services.Outgoing;
 
 namespace AggregatorMicroservice.Models.DTOs.Aggregated;
 

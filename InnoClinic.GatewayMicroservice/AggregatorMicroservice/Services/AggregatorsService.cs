@@ -1,11 +1,17 @@
 ﻿using AggregatorMicroservice.Models.DTOs.Aggregated;
-using AggregatorMicroservice.Models.DTOs.Incoming;
-using AggregatorMicroservice.Models.DTOs.Outgoing;
-using AggregatorMicroservice.Models.RequestParameters;
 using AggregatorMicroservice.Services.Abstractions;
 using AutoMapper;
+using InnoClinic.SharedModels.DTOs.Appointments.Outgoing;
+using InnoClinic.SharedModels.DTOs.Documents.Incoming;
+using InnoClinic.SharedModels.DTOs.Identity.Incoming;
+using InnoClinic.SharedModels.DTOs.Profiles.Incoming;
+using InnoClinic.SharedModels.DTOs.Profiles.Outgoing;
+using InnoClinic.SharedModels.DTOs.Services.Outgoing;
+using InnoClinic.SharedModels.DTOs.Offices.Outgoing;
 using Newtonsoft.Json;
 using System.Web;
+using InnoClinic.SharedModels.DTOs.Appointments.RequestParameters;
+using InnoClinic.SharedModels.DTOs.Profiles.RequestParameters;
 
 namespace AggregatorMicroservice.Services;
 
@@ -116,7 +122,7 @@ public class AggregatorsService : IAggregatorsService
         var fullSpecializationsUrl = servicesUrl + $"/api/Specializations/specialization/{doctorContent.SpecializationId}/min";
         var fullOfficesUrl = officesUrl + $"/api/Offices/office/{doctorContent.OfficeId}";
         var specializationContent = await _crudClient.GetAsync<SpecializationMinOutgoingDto>(fullSpecializationsUrl, authParam);
-        var officeContent = await _crudClient.GetAsync<OfficeOutgoingDto>(fullOfficesUrl, authParam);
+        var officeContent = await _crudClient.GetAsync<OfficeResponse>(fullOfficesUrl, authParam);
         var servicesContent = await _crudClient.GetAsync<IEnumerable<ServiceMinOutgoingDto>>(fullOfficesUrl, authParam);
 
         var aggregated = _mapper.Map<DoctorProfileByPatientAggregatedDto>(doctorContent);
@@ -138,7 +144,7 @@ public class AggregatorsService : IAggregatorsService
         var fullSpecializationsUrl = servicesUrl + $"/api/Specializations/specialization/{doctorContent.SpecializationId}/min";
         var fullOfficesUrl = officesUrl + $"/api/Offices/office/{doctorContent.OfficeId}";
         var specializationContent = await _crudClient.GetAsync<SpecializationMinOutgoingDto>(fullSpecializationsUrl, authParam);
-        var officeContent = await _crudClient.GetAsync<OfficeOutgoingDto>(fullOfficesUrl, authParam);
+        var officeContent = await _crudClient.GetAsync<OfficeResponse>(fullOfficesUrl, authParam);
 
         var aggregated = _mapper.Map<DoctorProfileByDoctorAggregatedDto>(doctorContent);
         aggregated.Spectialization = specializationContent;
@@ -159,7 +165,7 @@ public class AggregatorsService : IAggregatorsService
         var fullSpecializationsUrl = servicesUrl + $"/api/Specializations/specialization/{doctorContent.SpecializationId}/min";
         var fullOfficesUrl = officesUrl + $"/api/Offices/office/{doctorContent.OfficeId}";
         var specializationContent = await _crudClient.GetAsync<SpecializationMinOutgoingDto>(fullSpecializationsUrl, authParam);
-        var officeContent = await _crudClient.GetAsync<OfficeOutgoingDto>(fullOfficesUrl, authParam);
+        var officeContent = await _crudClient.GetAsync<OfficeResponse>(fullOfficesUrl, authParam);
 
         var aggregated = _mapper.Map<DoctorProfileByReceptionistAggregatedDto>(doctorContent);
         aggregated.Spectialization = specializationContent;
@@ -189,7 +195,7 @@ public class AggregatorsService : IAggregatorsService
             .Distinct()
             .ToList();
         var fullOfficesUrl = officesUrl + $"/api/Offices/ids";
-        var officesContent = await _crudClient.PostAsync<IEnumerable<Guid>, IEnumerable<OfficeOutgoingDto>>(fullOfficesUrl, officesIds, authParam);
+        var officesContent = await _crudClient.PostAsync<IEnumerable<Guid>, IEnumerable<OfficeResponse>>(fullOfficesUrl, officesIds, authParam);
         var mappedOfficesContent = _mapper.Map<IEnumerable<OfficeAddressAggregatedDto>>(officesContent);
 
         var aggregated = new List<DoctorMinProfileAggregatedDto>();

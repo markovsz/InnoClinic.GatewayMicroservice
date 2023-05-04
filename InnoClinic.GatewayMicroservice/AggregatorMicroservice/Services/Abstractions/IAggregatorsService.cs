@@ -1,5 +1,6 @@
 ﻿using AggregatorMicroservice.Models.DTOs.Aggregated;
-using AggregatorMicroservice.Models.RequestParameters;
+using InnoClinic.SharedModels.DTOs.Appointments.RequestParameters;
+using InnoClinic.SharedModels.DTOs.Profiles.RequestParameters;
 
 namespace AggregatorMicroservice.Services.Abstractions;
 

@@ -1,8 +1,7 @@
 ﻿using AggregatorMicroservice.Models.DTOs.Aggregated;
 using AggregatorMicroservice.Models.Enums;
-using AggregatorMicroservice.Models.RequestParameters;
 using AggregatorMicroservice.Services.Abstractions;
-using Microsoft.AspNetCore.Authorization;
+using InnoClinic.SharedModels.DTOs.Appointments.RequestParameters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AggregatorMicroservice.Controllers
