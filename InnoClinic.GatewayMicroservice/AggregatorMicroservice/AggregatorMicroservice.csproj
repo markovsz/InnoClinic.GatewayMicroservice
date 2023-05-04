@@ -14,4 +14,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="InnoClinic.SharedModels">
+      <HintPath>..\..\..\InnoClinic.SharedModels\InnoClinic.SharedModels\bin\Debug\net6.0\InnoClinic.SharedModels.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
