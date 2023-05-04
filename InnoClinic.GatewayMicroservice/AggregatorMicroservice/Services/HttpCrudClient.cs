@@ -12,7 +12,7 @@ public class HttpCrudClient : IHttpCrudClient
         _httpClientFactory = httpClientFactory;
     }
 
-    public async Task<TOut> PostAsync<TIn, TOut>(string uri, TIn entity, string authParam)
+    public async Task<HttpResponseMessage> BasePostAsync<TIn>(string uri, TIn entity, string authParam)
     {
         var httpContext = _httpClientFactory.CreateClient();
         var data = JsonConvert.SerializeObject(entity);
@@ -24,9 +24,20 @@ public class HttpCrudClient : IHttpCrudClient
         var response = await httpContext.SendAsync(requestContent);
         if (!response.IsSuccessStatusCode)
             throw new Exception();
+        return response;
+    }
+
+    public async Task<TOut> PostAsync<TIn, TOut>(string uri, TIn entity, string authParam)
+    {
+        var response = await BasePostAsync(uri, entity, authParam);
         var responseBody = await response.Content.ReadAsStringAsync();
         var content = JsonConvert.DeserializeObject<TOut>(responseBody);
         return content;
+    }
+
+    public async Task PostAsync<TIn>(string uri, TIn entity, string authParam)
+    {
+        await BasePostAsync(uri, entity, authParam);
     }
 
     public async Task<TOut> GetAsync<TOut>(string uri, string authParam)
