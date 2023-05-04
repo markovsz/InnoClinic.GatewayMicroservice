@@ -206,6 +206,22 @@ public class AggregatorsService : IAggregatorsService
         return aggregated;
     }
 
+    public async Task CreateAccountAsync(CreateAccountAggregatedDto incomingDto, string authParam)
+    {
+        var identityServerUrl = _configuration.GetSection("ApiUrls").GetSection("IdentityServerUrl").Value;
+        var documentsUrl = _configuration.GetSection("ApiUrls").GetSection("DocumentsUrl").Value;
+
+        var fullPhotosUrl = documentsUrl + $"/api/Documents/Photos";
+        var photoDto = _mapper.Map<DocumentIncomingDto>(incomingDto);
+        var photoUrl = await _crudClient.PostAsync<DocumentIncomingDto, string>(fullPhotosUrl, photoDto, authParam);
+
+        var fullSignUpUrl = identityServerUrl + $"/api/Auth/patient/signup";
+        var signUpDto = _mapper.Map<SignUpIncomingDto>(incomingDto);
+        signUpDto.PhotoUrl = photoUrl;
+
+        await _crudClient.PostAsync<SignUpIncomingDto>(fullSignUpUrl, signUpDto, authParam);
+    }
+
     public async Task<Guid> CreatePatientAsync(CreatePatientAggregatedDto incomingDto, string authParam)
     {
         var profilesUrl = _configuration.GetSection("ApiUrls").GetSection("ProfilesUrl").Value;

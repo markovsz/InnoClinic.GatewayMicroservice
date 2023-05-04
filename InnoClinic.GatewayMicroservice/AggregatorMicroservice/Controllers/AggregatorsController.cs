@@ -59,6 +59,13 @@ namespace AggregatorMicroservice.Controllers
             return Forbid();
         }
 
+        [HttpPost("signup")]
+        public async Task<IActionResult> CreateAccountAsync(CreateAccountAggregatedDto aggregatedDto, string authParam)
+        {
+            await _aggregatorsService.CreateAccountAsync(aggregatedDto, authParam);
+            return Ok();
+        }
+
         [HttpPost("Patient")]
         public async Task<IActionResult> CreatePatientAsync(CreatePatientAggregatedDto aggregatedDto, string authParam)
         {

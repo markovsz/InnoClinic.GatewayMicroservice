@@ -5,6 +5,7 @@ namespace AggregatorMicroservice.Services.Abstractions;
 
 public interface IAggregatorsService
 {
+    Task CreateAccountAsync(CreateAccountAggregatedDto aggregatedDto, string authParam);
     Task<Guid> CreatePatientAsync(CreatePatientAggregatedDto incomingDto, string authParam);
     Task<Guid> CreateDoctorAsync(CreateDoctorAggregatedDto incomingDto, string authParam);
     Task<Guid> CreateReceptionistAsync(CreateReceptionistAggregatedDto incomingDto, string authParam);
