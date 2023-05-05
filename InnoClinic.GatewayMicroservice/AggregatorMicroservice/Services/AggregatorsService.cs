@@ -12,6 +12,8 @@ using Newtonsoft.Json;
 using System.Web;
 using InnoClinic.SharedModels.DTOs.Appointments.RequestParameters;
 using InnoClinic.SharedModels.DTOs.Profiles.RequestParameters;
+using InnoClinic.SharedModels.DTOs.Documents.Outgoing;
+using InnoClinic.SharedModels.DTOs.Identity.Outgoing;
 
 namespace AggregatorMicroservice.Services;
 
@@ -219,11 +221,11 @@ public class AggregatorsService : IAggregatorsService
 
         var fullPhotosUrl = documentsUrl + $"/api/Documents/Photos";
         var photoDto = incomingDto.Photo;
-        var photoUrl = await _crudClient.PostAsync<DocumentIncomingDto, string>(fullPhotosUrl, photoDto);
+        var photoCreatedDto = await _crudClient.PostAsync<DocumentIncomingDto, DocumentCreatedOutgoingDto>(fullPhotosUrl, photoDto);
 
         var fullSignUpUrl = identityServerUrl + $"/api/Auth/admin/patient/signup";
         var signUpDto = _mapper.Map<SignUpIncomingDto>(incomingDto);
-        signUpDto.PhotoUrl = photoUrl;
+        signUpDto.PhotoUrl = photoCreatedDto.FilePath;
 
         await _crudClient.PostAsync<SignUpIncomingDto>(fullSignUpUrl, signUpDto);
     }
@@ -236,19 +238,19 @@ public class AggregatorsService : IAggregatorsService
 
         var fullPhotosUrl = documentsUrl + $"/api/Documents/Photos";
         var photoDto = incomingDto.Photo;
-        var photoUrl = await _crudClient.PostAsync<DocumentIncomingDto, string>(fullPhotosUrl, photoDto, authParam);
+        var photoCreatedDto = await _crudClient.PostAsync<DocumentIncomingDto, DocumentCreatedOutgoingDto>(fullPhotosUrl, photoDto, authParam);
 
         var fullSignUpUrl = identityServerUrl + $"/api/Auth/admin/doctor/signup";
         var signUpDto = new SignUpWithoutPasswordIncomingDto()
         {
             Email = incomingDto.Email,
-            PhotoUrl = photoUrl
+            PhotoUrl = photoCreatedDto.FilePath
         };
-        await _crudClient.PostAsync<SignUpWithoutPasswordIncomingDto>(fullSignUpUrl, signUpDto, authParam);
-
+        var signUpResult = await _crudClient.PostAsync<SignUpWithoutPasswordIncomingDto, SignUpOutgoingDto>(fullSignUpUrl, signUpDto, authParam);
 
         var fullPatientUrl = profilesUrl + $"/api/Patients";
         var patientDto = _mapper.Map<PatientIncomingDto>(incomingDto);
+        patientDto.AccountId = signUpResult.AccountId;
         var patientId = await _crudClient.PostAsync<PatientIncomingDto, Guid>(fullPatientUrl, patientDto, authParam);
 
         return patientId;
@@ -262,18 +264,19 @@ public class AggregatorsService : IAggregatorsService
 
         var fullPhotosUrl = documentsUrl + $"/api/Documents/Photos";
         var photoDto = incomingDto.Photo;
-        var photoUrl = await _crudClient.PostAsync<DocumentIncomingDto, string>(fullPhotosUrl, photoDto, authParam);
+        var photoCreatedDto = await _crudClient.PostAsync<DocumentIncomingDto, DocumentCreatedOutgoingDto>(fullPhotosUrl, photoDto, authParam);
 
         var fullSignUpUrl = identityServerUrl + $"/api/Auth/admin/doctor/signup";
         var signUpDto = new SignUpWithoutPasswordIncomingDto()
         {
-            Email = incomingDto.Email
+            Email = incomingDto.Email,
+            PhotoUrl = photoCreatedDto.FilePath
         };
-        await _crudClient.PostAsync<SignUpWithoutPasswordIncomingDto>(fullSignUpUrl, signUpDto, authParam);
-
+        var signUpResult = await _crudClient.PostAsync<SignUpWithoutPasswordIncomingDto, SignUpOutgoingDto>(fullSignUpUrl, signUpDto, authParam);
 
         var fullDoctorUrl = profilesUrl + $"/api/Doctors";
         var doctorDto = _mapper.Map<DoctorIncomingDto>(incomingDto);
+        doctorDto.AccountId = signUpResult.AccountId;
         var doctorId = await _crudClient.PostAsync<DoctorIncomingDto, Guid>(fullDoctorUrl, doctorDto, authParam);
 
         return doctorId;
@@ -287,18 +290,20 @@ public class AggregatorsService : IAggregatorsService
 
         var fullPhotosUrl = documentsUrl + $"/api/Documents/Photos";
         var photoDto = incomingDto.Photo;
-        var photoUrl = await _crudClient.PostAsync<DocumentIncomingDto, string>(fullPhotosUrl, photoDto, authParam);
+        var photoCreatedDto = await _crudClient.PostAsync<DocumentIncomingDto, DocumentCreatedOutgoingDto>(fullPhotosUrl, photoDto, authParam);
 
         var fullSignUpUrl = identityServerUrl + $"/api/Auth/admin/receptionist/signup";
         var signUpDto = new SignUpWithoutPasswordIncomingDto()
         {
             Email = incomingDto.Email,
+            PhotoUrl = photoCreatedDto.FilePath
         };
-        await _crudClient.PostAsync<SignUpWithoutPasswordIncomingDto>(fullSignUpUrl, signUpDto, authParam);
+        var signUpResult = await _crudClient.PostAsync<SignUpWithoutPasswordIncomingDto, SignUpOutgoingDto>(fullSignUpUrl, signUpDto, authParam);
 
 
         var fullReceptionistUrl = profilesUrl + $"/api/Receptionists";
         var receptionistDto = _mapper.Map<ReceptionistIncomingDto>(incomingDto);
+        receptionistDto.AccountId = signUpResult.AccountId;
         var receptionistId = await _crudClient.PostAsync<ReceptionistIncomingDto, Guid>(fullReceptionistUrl, receptionistDto, authParam);
 
         return receptionistId;
