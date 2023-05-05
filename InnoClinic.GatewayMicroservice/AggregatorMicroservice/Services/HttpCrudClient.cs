@@ -1,5 +1,6 @@
 ﻿using AggregatorMicroservice.Services.Abstractions;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace AggregatorMicroservice.Services;
 
@@ -24,7 +25,7 @@ public class HttpCrudClient : IHttpCrudClient
             httpContext.DefaultRequestHeaders.Add("Authorization", "Bearer " + authParam);
         var response = await httpContext.SendAsync(requestContent);
         if (!response.IsSuccessStatusCode)
-            throw new Exception();
+            throw new Exception(await response.Content.ReadAsStringAsync());
         return response;
     }
 
