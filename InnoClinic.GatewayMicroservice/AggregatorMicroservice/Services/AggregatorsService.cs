@@ -212,20 +212,20 @@ public class AggregatorsService : IAggregatorsService
         return aggregated;
     }
 
-    public async Task CreateAccountAsync(CreateAccountAggregatedDto incomingDto, string authParam)
+    public async Task CreateAccountAsync(CreateAccountAggregatedDto incomingDto)
     {
         var identityServerUrl = _configuration.GetSection("ApiUrls").GetSection("IdentityServerUrl").Value;
         var documentsUrl = _configuration.GetSection("ApiUrls").GetSection("DocumentsUrl").Value;
 
         var fullPhotosUrl = documentsUrl + $"/api/Documents/Photos";
-        var photoDto = _mapper.Map<DocumentIncomingDto>(incomingDto);
-        var photoUrl = await _crudClient.PostAsync<DocumentIncomingDto, string>(fullPhotosUrl, photoDto, authParam);
+        var photoDto = incomingDto.Photo;
+        var photoUrl = await _crudClient.PostAsync<DocumentIncomingDto, string>(fullPhotosUrl, photoDto);
 
         var fullSignUpUrl = identityServerUrl + $"/api/Auth/patient/signup";
         var signUpDto = _mapper.Map<SignUpIncomingDto>(incomingDto);
         signUpDto.PhotoUrl = photoUrl;
 
-        await _crudClient.PostAsync<SignUpIncomingDto>(fullSignUpUrl, signUpDto, authParam);
+        await _crudClient.PostAsync<SignUpIncomingDto>(fullSignUpUrl, signUpDto);
     }
 
     public async Task<Guid> CreatePatientAsync(CreatePatientAggregatedDto incomingDto, string authParam)
@@ -235,7 +235,7 @@ public class AggregatorsService : IAggregatorsService
         var documentsUrl = _configuration.GetSection("ApiUrls").GetSection("DocumentsUrl").Value;
 
         var fullPhotosUrl = documentsUrl + $"/api/Documents/Photos";
-        var photoDto = _mapper.Map<DocumentIncomingDto>(incomingDto);
+        var photoDto = incomingDto.Photo;
         var photoUrl = await _crudClient.PostAsync<DocumentIncomingDto, string>(fullPhotosUrl, photoDto, authParam);
 
         var fullSignUpUrl = identityServerUrl + $"/api/Auth/admin/doctor/signup";
@@ -261,7 +261,7 @@ public class AggregatorsService : IAggregatorsService
         var documentsUrl = _configuration.GetSection("ApiUrls").GetSection("DocumentsUrl").Value;
 
         var fullPhotosUrl = documentsUrl + $"/api/Documents/Photos";
-        var photoDto = _mapper.Map<DocumentIncomingDto>(incomingDto);
+        var photoDto = incomingDto.Photo;
         var photoUrl = await _crudClient.PostAsync<DocumentIncomingDto, string>(fullPhotosUrl, photoDto, authParam);
 
         var fullSignUpUrl = identityServerUrl + $"/api/Auth/doctor/signup";
@@ -286,7 +286,7 @@ public class AggregatorsService : IAggregatorsService
         var documentsUrl = _configuration.GetSection("ApiUrls").GetSection("DocumentsUrl").Value;
 
         var fullPhotosUrl = documentsUrl + $"/api/Documents/Photos";
-        var photoDto = _mapper.Map<DocumentIncomingDto>(incomingDto);
+        var photoDto = incomingDto.Photo;
         var photoUrl = await _crudClient.PostAsync<DocumentIncomingDto, string>(fullPhotosUrl, photoDto, authParam);
 
         var fullSignUpUrl = identityServerUrl + $"/api/Auth/receptionist/signup";
