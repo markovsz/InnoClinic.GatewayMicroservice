@@ -221,7 +221,7 @@ public class AggregatorsService : IAggregatorsService
         var photoDto = incomingDto.Photo;
         var photoUrl = await _crudClient.PostAsync<DocumentIncomingDto, string>(fullPhotosUrl, photoDto);
 
-        var fullSignUpUrl = identityServerUrl + $"/api/Auth/patient/signup";
+        var fullSignUpUrl = identityServerUrl + $"/api/Auth/admin/patient/signup";
         var signUpDto = _mapper.Map<SignUpIncomingDto>(incomingDto);
         signUpDto.PhotoUrl = photoUrl;
 
@@ -264,7 +264,7 @@ public class AggregatorsService : IAggregatorsService
         var photoDto = incomingDto.Photo;
         var photoUrl = await _crudClient.PostAsync<DocumentIncomingDto, string>(fullPhotosUrl, photoDto, authParam);
 
-        var fullSignUpUrl = identityServerUrl + $"/api/Auth/doctor/signup";
+        var fullSignUpUrl = identityServerUrl + $"/api/Auth/admin/doctor/signup";
         var signUpDto = new SignUpWithoutPasswordIncomingDto()
         {
             Email = incomingDto.Email
@@ -289,7 +289,7 @@ public class AggregatorsService : IAggregatorsService
         var photoDto = incomingDto.Photo;
         var photoUrl = await _crudClient.PostAsync<DocumentIncomingDto, string>(fullPhotosUrl, photoDto, authParam);
 
-        var fullSignUpUrl = identityServerUrl + $"/api/Auth/receptionist/signup";
+        var fullSignUpUrl = identityServerUrl + $"/api/Auth/admin/receptionist/signup";
         var signUpDto = new SignUpWithoutPasswordIncomingDto()
         {
             Email = incomingDto.Email,
