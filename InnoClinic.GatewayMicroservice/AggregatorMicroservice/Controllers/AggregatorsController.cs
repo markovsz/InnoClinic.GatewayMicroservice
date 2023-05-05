@@ -59,9 +59,9 @@ namespace AggregatorMicroservice.Controllers
         }
 
         [HttpPost("signup")]
-        public async Task<IActionResult> CreateAccountAsync(CreateAccountAggregatedDto aggregatedDto, string authParam)
+        public async Task<IActionResult> CreateAccountAsync(CreateAccountAggregatedDto aggregatedDto)
         {
-            await _aggregatorsService.CreateAccountAsync(aggregatedDto, authParam);
+            await _aggregatorsService.CreateAccountAsync(aggregatedDto);
             return Ok();
         }
 

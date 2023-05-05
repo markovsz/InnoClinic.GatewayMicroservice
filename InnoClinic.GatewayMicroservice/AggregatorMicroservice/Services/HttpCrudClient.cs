@@ -12,7 +12,7 @@ public class HttpCrudClient : IHttpCrudClient
         _httpClientFactory = httpClientFactory;
     }
 
-    public async Task<HttpResponseMessage> BasePostAsync<TIn>(string uri, TIn entity, string authParam)
+    public async Task<HttpResponseMessage> BasePostAsync<TIn>(string uri, TIn entity, string? authParam)
     {
         var httpContext = _httpClientFactory.CreateClient();
         var data = JsonConvert.SerializeObject(entity);
@@ -20,14 +20,15 @@ public class HttpCrudClient : IHttpCrudClient
         requestContent.Content = new StringContent(data);
         requestContent.Content.Headers.Remove("Content-Type");
         requestContent.Content.Headers.Add("Content-Type", "application/json");
-        httpContext.DefaultRequestHeaders.Add("Authorization", "Bearer " + authParam);
+        if(authParam is not null)
+            httpContext.DefaultRequestHeaders.Add("Authorization", "Bearer " + authParam);
         var response = await httpContext.SendAsync(requestContent);
         if (!response.IsSuccessStatusCode)
             throw new Exception();
         return response;
     }
 
-    public async Task<TOut> PostAsync<TIn, TOut>(string uri, TIn entity, string authParam)
+    public async Task<TOut> PostAsync<TIn, TOut>(string uri, TIn entity, string? authParam = null)
     {
         var response = await BasePostAsync(uri, entity, authParam);
         var responseBody = await response.Content.ReadAsStringAsync();
@@ -35,15 +36,16 @@ public class HttpCrudClient : IHttpCrudClient
         return content;
     }
 
-    public async Task PostAsync<TIn>(string uri, TIn entity, string authParam)
+    public async Task PostAsync<TIn>(string uri, TIn entity, string? authParam = null)
     {
         await BasePostAsync(uri, entity, authParam);
     }
 
-    public async Task<TOut> GetAsync<TOut>(string uri, string authParam)
+    public async Task<TOut> GetAsync<TOut>(string uri, string? authParam = null)
     {
         var httpContext = _httpClientFactory.CreateClient();
-        httpContext.DefaultRequestHeaders.Add("Authorization", "Bearer " + authParam);
+        if (authParam is not null)
+            httpContext.DefaultRequestHeaders.Add("Authorization", "Bearer " + authParam);
         var response = await httpContext.GetAsync(uri);
         if (!response.IsSuccessStatusCode)
             throw new Exception();
