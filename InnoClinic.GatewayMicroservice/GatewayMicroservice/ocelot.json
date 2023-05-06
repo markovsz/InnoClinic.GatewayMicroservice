@@ -14,18 +14,6 @@
       ]
     },
     {
-      "UpstreamPathTemplate": "/api/patients/ids",
-      "UpstreamHttpMethod": [ "Post" ],
-      "DownstreamPathTemplate": "/api/Patients/ids",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7117
-        }
-      ]
-    },
-    {
       "UpstreamPathTemplate": "/api/patients/{patientId}",
       "UpstreamHttpMethod": [ "Get" ],
       "DownstreamPathTemplate": "/api/Patients/patient/{patientId}",
@@ -81,18 +69,6 @@
     //Doctors
     {
       "UpstreamPathTemplate": "/api/doctors",
-      "UpstreamHttpMethod": [ "Post" ],
-      "DownstreamPathTemplate": "/api/Doctors",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7117
-        }
-      ]
-    },
-    {
-      "UpstreamPathTemplate": "/api/doctors",
       "UpstreamHttpMethod": [ "Get" ],
       "DownstreamPathTemplate": "/api/Doctors",
       "DownstreamScheme": "https",
@@ -145,18 +121,6 @@
 
 
     //Receptionists
-    {
-      "UpstreamPathTemplate": "/api/receptionists",
-      "UpstreamHttpMethod": [ "Post" ],
-      "DownstreamPathTemplate": "/api/Receptionists",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7117
-        }
-      ]
-    },
     {
       "UpstreamPathTemplate": "/api/receptionists/{receptionistId}",
       "UpstreamHttpMethod": [ "Get" ],
@@ -226,42 +190,6 @@
       "UpstreamPathTemplate": "/api/logout",
       "UpstreamHttpMethod": [ "Post" ],
       "DownstreamPathTemplate": "/api/Auth/logout",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7239
-        }
-      ]
-    },
-    {
-      "UpstreamPathTemplate": "/api/auth/patient/signup",
-      "UpstreamHttpMethod": [ "Post" ],
-      "DownstreamPathTemplate": "/api/Auth/patient/signup",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7239
-        }
-      ]
-    },
-    {
-      "UpstreamPathTemplate": "/api/auth/doctor/signup",
-      "UpstreamHttpMethod": [ "Post" ],
-      "DownstreamPathTemplate": "/api/Auth/doctor/signup",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7239
-        }
-      ]
-    },
-    {
-      "UpstreamPathTemplate": "/api/auth/receptionist/signup",
-      "UpstreamHttpMethod": [ "Post" ],
-      "DownstreamPathTemplate": "/api/Auth/receptionist/signup",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -575,18 +503,6 @@
       ]
     },
     {
-      "UpstreamPathTemplate": "/api/offices/ids",
-      "UpstreamHttpMethod": [ "Get" ],
-      "DownstreamPathTemplate": "/api/Offices/ids",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7292
-        }
-      ]
-    },
-    {
       "UpstreamPathTemplate": "/api/offices/{officeId}",
       "UpstreamHttpMethod": [ "Get" ],
       "DownstreamPathTemplate": "/api/Offices/office/{officeId}",
@@ -629,32 +545,8 @@
 
     //Documents
     {
-      "UpstreamPathTemplate": "/api/documents/{partitionName}",
-      "UpstreamHttpMethod": [ "Post" ],
-      "DownstreamPathTemplate": "/api/Documents/{partitionName}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7067
-        }
-      ]
-    },
-    {
       "UpstreamPathTemplate": "/api/documents/{partitionName}/{documentName}",
       "UpstreamHttpMethod": [ "Get" ],
-      "DownstreamPathTemplate": "/api/Documents/{partitionName}/{documentName}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7067
-        }
-      ]
-    },
-    {
-      "UpstreamPathTemplate": "/api/documents/{partitionName}/{documentName}",
-      "UpstreamHttpMethod": [ "Delete" ],
       "DownstreamPathTemplate": "/api/Documents/{partitionName}/{documentName}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
