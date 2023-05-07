@@ -85,5 +85,12 @@ namespace AggregatorMicroservice.Controllers
             var id = await _aggregatorsService.CreateReceptionistAsync(aggregatedDto, authParam);
             return Created("", id);
         }
+
+        [HttpPost("Offices")]
+        public async Task<IActionResult> CreateOfficeAsync(CreateOfficeAggregatedDto aggregatedDto, string authParam)
+        {
+            var id = await _aggregatorsService.CreateOfficeAsync(aggregatedDto, authParam);
+            return Created("", id);
+        }
     }
 }

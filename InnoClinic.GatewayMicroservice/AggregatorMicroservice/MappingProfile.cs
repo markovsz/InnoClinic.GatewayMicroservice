@@ -11,6 +11,7 @@ public class MappingProfile : Profile
 {
 	public MappingProfile()
 	{
+		CreateMap<CreateOfficeAggregatedDto, CreateOfficeModel>();
 		CreateMap<OfficeAddressAggregatedDto, OfficeResponse>();
 		CreateMap<CreateAccountAggregatedDto, SignUpIncomingDto>();
 		CreateMap<CreatePatientAggregatedDto, PatientIncomingDto>();

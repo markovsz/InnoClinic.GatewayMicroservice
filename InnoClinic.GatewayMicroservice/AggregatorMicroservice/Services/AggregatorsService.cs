@@ -14,6 +14,9 @@ using InnoClinic.SharedModels.DTOs.Appointments.RequestParameters;
 using InnoClinic.SharedModels.DTOs.Profiles.RequestParameters;
 using InnoClinic.SharedModels.DTOs.Documents.Outgoing;
 using InnoClinic.SharedModels.DTOs.Identity.Outgoing;
+using System.Threading.Tasks;
+using System;
+using InnoClinic.SharedModels.DTOs.Offices.Incoming.Commands;
 
 namespace AggregatorMicroservice.Services;
 
@@ -307,6 +310,23 @@ public class AggregatorsService : IAggregatorsService
         var receptionistId = await _crudClient.PostAsync<ReceptionistIncomingDto, Guid>(fullReceptionistUrl, receptionistDto, authParam);
 
         return receptionistId;
+    }
+
+    public async Task<Guid> CreateOfficeAsync(CreateOfficeAggregatedDto incomingDto, string authParam)
+    {
+        var officesUrl = _configuration.GetSection("ApiUrls").GetSection("OfficesUrl").Value;
+        var documentsUrl = _configuration.GetSection("ApiUrls").GetSection("DocumentsUrl").Value;
+
+        var fullPhotosUrl = documentsUrl + $"/api/Documents/Photos";
+        var photoDto = incomingDto.Photo;
+        var photoCreatedDto = await _crudClient.PostAsync<DocumentIncomingDto, DocumentCreatedOutgoingDto>(fullPhotosUrl, photoDto, authParam);
+
+        var fullOfficesUrl = officesUrl + $"/api/Offices";
+        var office = _mapper.Map<CreateOfficeModel>(incomingDto);
+        office.PhotoUrl = photoCreatedDto.FilePath;
+        var officeId = await _crudClient.PostAsync<CreateOfficeModel, Guid>(fullOfficesUrl, office, authParam);
+
+        return officeId;
     }
 
 
