@@ -5,6 +5,8 @@ VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatewayMicroservice", "GatewayMicroservice\GatewayMicroservice.csproj", "{9A3BFC79-8DC7-4157-B1D0-959E2F1CF15A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AggregatorMicroservice", "AggregatorMicroservice\AggregatorMicroservice.csproj", "{C0C3D68F-26A6-4538-8F5F-D66B32C50426}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{9A3BFC79-8DC7-4157-B1D0-959E2F1CF15A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A3BFC79-8DC7-4157-B1D0-959E2F1CF15A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A3BFC79-8DC7-4157-B1D0-959E2F1CF15A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0C3D68F-26A6-4538-8F5F-D66B32C50426}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0C3D68F-26A6-4538-8F5F-D66B32C50426}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0C3D68F-26A6-4538-8F5F-D66B32C50426}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0C3D68F-26A6-4538-8F5F-D66B32C50426}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
