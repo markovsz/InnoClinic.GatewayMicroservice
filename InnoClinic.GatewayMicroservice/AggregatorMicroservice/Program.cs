@@ -8,7 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddHttpClient();
 builder.Services.ConfigureServices();
+builder.Services.ConfigureAuthentication(builder.Configuration);
 builder.Services.AddControllers();
+builder.Services.ConfigureFilterAttributes();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
@@ -20,9 +22,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExceptionsHandler>();
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseAuthentication();
 
 app.MapControllers();
 
