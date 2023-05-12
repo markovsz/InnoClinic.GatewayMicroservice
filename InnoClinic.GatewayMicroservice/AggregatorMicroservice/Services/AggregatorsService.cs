@@ -226,7 +226,7 @@ public class AggregatorsService : IAggregatorsService
         var photoDto = incomingDto.Photo;
         var photoCreatedDto = await _crudClient.PostAsync<DocumentIncomingDto, DocumentCreatedOutgoingDto>(fullPhotosUrl, photoDto);
 
-        var fullSignUpUrl = identityServerUrl + $"/api/Auth/admin/patient/signup";
+        var fullSignUpUrl = identityServerUrl + $"/api/Auth/patient/signup";
         var signUpDto = _mapper.Map<SignUpIncomingDto>(incomingDto);
         signUpDto.PhotoUrl = photoCreatedDto.FilePath;
 

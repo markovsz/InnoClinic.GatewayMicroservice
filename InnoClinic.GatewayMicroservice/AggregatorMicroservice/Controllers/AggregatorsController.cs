@@ -2,6 +2,7 @@
 using AggregatorMicroservice.Models.Enums;
 using AggregatorMicroservice.Services.Abstractions;
 using InnoClinic.SharedModels.DTOs.Appointments.RequestParameters;
+using InnoClinic.SharedModels.DTOs.Profiles.RequestParameters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AggregatorMicroservice.Controllers
@@ -56,6 +57,13 @@ namespace AggregatorMicroservice.Controllers
                 return Ok(result);
             }
             return Forbid();
+        }
+
+        [HttpGet("Doctors")]
+        public async Task<IActionResult> GetDoctorProfilesAsync(DoctorParameters parameters, string authParam)
+        {
+            var doctors = await _aggregatorsService.GetDoctorProfilesByPatientAsync(parameters, authParam);
+            return Ok(doctors);
         }
 
         [HttpPost("signup")]

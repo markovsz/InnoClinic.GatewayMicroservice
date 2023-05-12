@@ -2,6 +2,7 @@
 using AutoMapper;
 using InnoClinic.SharedModels.DTOs.Appointments.Outgoing;
 using InnoClinic.SharedModels.DTOs.Identity.Incoming;
+using InnoClinic.SharedModels.DTOs.Offices.Incoming.Commands;
 using InnoClinic.SharedModels.DTOs.Offices.Outgoing;
 using InnoClinic.SharedModels.DTOs.Profiles.Incoming;
 
