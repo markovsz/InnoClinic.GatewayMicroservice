@@ -45,5 +45,6 @@ public static class ServiceExtensions
     public static void ConfigureFilterAttributes(this IServiceCollection services)
     {
         services.AddScoped<ExtractRoleAttribute>();
+        services.AddScoped<ExtractJwtTokenAttribute>();
     }
 }

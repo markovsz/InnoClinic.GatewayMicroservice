@@ -1,4 +1,5 @@
-﻿using AggregatorMicroservice.Models.DTOs.Aggregated;
+﻿using AggregatorMicroservice.FilterAttributes;
+using AggregatorMicroservice.Models.DTOs.Aggregated;
 using AggregatorMicroservice.Models.Enums;
 using AggregatorMicroservice.Services.Abstractions;
 using InnoClinic.SharedModels.DTOs.Appointments.RequestParameters;
@@ -18,28 +19,28 @@ namespace AggregatorMicroservice.Controllers
         }
 
         [HttpGet("Appointments/list")]
-        public async Task<IActionResult> GetAppointmentsByReceptionistAsync([FromQuery] AppointmentParameters parameters, string authParam)
+        public async Task<IActionResult> GetAppointmentsByReceptionistAsync([FromQuery] AppointmentParameters parameters, string? authParam)
         {
             var appointments = await _aggregatorsService.GetAppointmentsByReceptionistAsync(parameters, authParam);
             return Ok(appointments);
         }
 
         [HttpGet("Appointments/schedule")]
-        public async Task<IActionResult> GetAppointmentsScheduleByDoctorAsync([FromQuery] ScheduleParameters parameters, string authParam)
+        public async Task<IActionResult> GetAppointmentsScheduleByDoctorAsync([FromQuery] ScheduleParameters parameters, string? authParam)
         {
             var appointments = await _aggregatorsService.GetAppointmentsScheduleByDoctorAsync(parameters, authParam);
             return Ok(appointments);
         }
 
         [HttpGet("Results/{id}")]
-        public async Task<IActionResult> GetResultByIdAsync(Guid id, string authParam)
+        public async Task<IActionResult> GetResultByIdAsync(Guid id, string? authParam)
         {
             var result = await _aggregatorsService.GetResultByIdAsync(id, authParam);
             return Ok(result);
         }
 
         [HttpGet("Doctors/doctor/{id}")]
-        public async Task<IActionResult> GetDoctorProfileAsync(Guid id, string roleName, string authParam)
+        public async Task<IActionResult> GetDoctorProfileByIdAsync(Guid id, string roleName, string? authParam)
         {
             if (roleName.Equals(nameof(UserRole.Patient)))
             {
@@ -58,7 +59,7 @@ namespace AggregatorMicroservice.Controllers
             }
             return Forbid();
         }
-
+        
         [HttpGet("Doctors/profile")]
         public async Task<IActionResult> GetPatientProfileAsync(string? authParam)
         {
@@ -68,7 +69,7 @@ namespace AggregatorMicroservice.Controllers
 
         [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
         [HttpGet("Doctors")]
-        public async Task<IActionResult> GetDoctorProfilesAsync(DoctorParameters parameters, string authParam)
+        public async Task<IActionResult> GetDoctorProfilesAsync([FromQuery] DoctorParameters parameters, string? authParam)
         {
             var doctors = await _aggregatorsService.GetDoctorProfilesByPatientAsync(parameters, authParam);
             return Ok(doctors);
@@ -82,28 +83,28 @@ namespace AggregatorMicroservice.Controllers
         }
 
         [HttpPost("Patient")]
-        public async Task<IActionResult> CreatePatientAsync(CreatePatientAggregatedDto aggregatedDto, string authParam)
+        public async Task<IActionResult> CreatePatientAsync(CreatePatientAggregatedDto aggregatedDto, string? authParam)
         {
             var id = await _aggregatorsService.CreatePatientAsync(aggregatedDto, authParam);
             return Created("", id);
         }
 
         [HttpPost("Doctor")]
-        public async Task<IActionResult> CreateDoctorAsync(CreateDoctorAggregatedDto aggregatedDto, string authParam)
+        public async Task<IActionResult> CreateDoctorAsync(CreateDoctorAggregatedDto aggregatedDto, string? authParam)
         {
             var id = await _aggregatorsService.CreateDoctorAsync(aggregatedDto, authParam);
             return Created("", id);
         }
 
         [HttpPost("Receptionist")]
-        public async Task<IActionResult> CreateReceptionistAsync(CreateReceptionistAggregatedDto aggregatedDto, string authParam)
+        public async Task<IActionResult> CreateReceptionistAsync(CreateReceptionistAggregatedDto aggregatedDto, string? authParam)
         {
             var id = await _aggregatorsService.CreateReceptionistAsync(aggregatedDto, authParam);
             return Created("", id);
         }
 
         [HttpPost("Offices")]
-        public async Task<IActionResult> CreateOfficeAsync(CreateOfficeAggregatedDto aggregatedDto, string authParam)
+        public async Task<IActionResult> CreateOfficeAsync(CreateOfficeAggregatedDto aggregatedDto, string? authParam)
         {
             var id = await _aggregatorsService.CreateOfficeAsync(aggregatedDto, authParam);
             return Created("", id);

@@ -203,30 +203,31 @@ public class AggregatorsService : IAggregatorsService
 
     public async Task<IEnumerable<DoctorMinProfileAggregatedDto>> GetDoctorProfilesByPatientAsync(DoctorParameters parameters, string authParam)
     {
-        var officesUrl = _configuration.GetSection("ApiUrls").GetSection("AppointmentsUrl").Value;
+        var officesUrl = _configuration.GetSection("ApiUrls").GetSection("OfficesUrl").Value;
         var profilesUrl = _configuration.GetSection("ApiUrls").GetSection("ProfilesUrl").Value;
         var servicesUrl = _configuration.GetSection("ApiUrls").GetSection("ServicesUrl").Value;
 
         var fullDoctorUrl = profilesUrl + $"/api/Doctors?" + ToRequestParams(parameters);
-        var doctorsContent = await _crudClient.GetAsync<IEnumerable<DoctorOutgoingDto>>(fullDoctorUrl, authParam);
+        var doctorsContent = await _crudClient.GetAsync<DoctorsPaginationOutgoingDto>(fullDoctorUrl, authParam);
 
-        var specializationIds = doctorsContent
+        var specializationIds = doctorsContent.Entities
             .Select(e => e.SpecializationId)
             .Distinct()
             .ToList();
         var fullSpecializationsUrl = servicesUrl + $"/api/Specializations/ids";
         var specializationsContent = await _crudClient.PostAsync<IEnumerable<Guid>, IEnumerable<SpecializationMinOutgoingDto>>(fullSpecializationsUrl, specializationIds, authParam);
 
-        var officesIds = doctorsContent
+        var officesIds = doctorsContent.Entities
             .Select(e => e.OfficeId)
             .Distinct()
             .ToList();
+        var officesDto = new GetOfficesByIdsModel(officesIds);
         var fullOfficesUrl = officesUrl + $"/api/Offices/ids";
-        var officesContent = await _crudClient.PostAsync<IEnumerable<Guid>, IEnumerable<OfficeResponse>>(fullOfficesUrl, officesIds, authParam);
-        var mappedOfficesContent = _mapper.Map<IEnumerable<OfficeAddressAggregatedDto>>(officesContent);
+        var officesContent = await _crudClient.PostAsync<GetOfficesByIdsModel, OfficesResponse>(fullOfficesUrl, officesDto, authParam);
+        var mappedOfficesContent = _mapper.Map<IEnumerable<OfficeAddressAggregatedDto>>(officesContent.Offices);
 
         var aggregated = new List<DoctorMinProfileAggregatedDto>();
-        foreach (var doctor in doctorsContent)
+        foreach (var doctor in doctorsContent.Entities)
         {
             var mappedDoctor = _mapper.Map<DoctorMinProfileAggregatedDto>(doctor);
             mappedDoctor.Office = mappedOfficesContent
@@ -235,6 +236,7 @@ public class AggregatorsService : IAggregatorsService
             mappedDoctor.Spectialization = specializationsContent
                 .Where(e => e.Id.Equals(doctor.SpecializationId))
                 .FirstOrDefault();
+            aggregated.Add(mappedDoctor);
         }
         return aggregated;
     }

@@ -26,6 +26,18 @@
       ]
     },
     {
+      "UpstreamPathTemplate": "/api/patients/profile",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/Patients/profile",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7117
+        }
+      ]
+    },
+    {
       "UpstreamPathTemplate": "/api/patients",
       "UpstreamHttpMethod": [ "Get" ],
       "DownstreamPathTemplate": "/api/Patients",
@@ -113,6 +125,18 @@
       "UpstreamPathTemplate": "/api/receptionists/{receptionistId}",
       "UpstreamHttpMethod": [ "Get" ],
       "DownstreamPathTemplate": "/api/Receptionists/receptionist/{receptionistId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7117
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/receptionists/profile",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/Receptionists/profile",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -662,6 +686,18 @@
       "UpstreamPathTemplate": "/api/offices",
       "UpstreamHttpMethod": [ "Post" ],
       "DownstreamPathTemplate": "/api/Aggregators/Offices",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7012
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/doctors/profile",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/Aggregators/Doctors/profile",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
