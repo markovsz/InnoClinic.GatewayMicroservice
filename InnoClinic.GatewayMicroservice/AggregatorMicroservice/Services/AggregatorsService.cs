@@ -17,6 +17,7 @@ using InnoClinic.SharedModels.DTOs.Identity.Outgoing;
 using System.Threading.Tasks;
 using System;
 using InnoClinic.SharedModels.DTOs.Offices.Incoming.Commands;
+using InnoClinic.SharedModels.DTOs.Offices.Incoming.Queries;
 
 namespace AggregatorMicroservice.Services;
 
@@ -144,6 +145,27 @@ public class AggregatorsService : IAggregatorsService
         var servicesUrl = _configuration.GetSection("ApiUrls").GetSection("ServicesUrl").Value;
 
         var fullDoctorUrl = profilesUrl + $"/api/Doctors/doctor/{doctorId}";
+        var doctorContent = await _crudClient.GetAsync<DoctorOutgoingDto>(fullDoctorUrl, authParam);
+
+        var fullSpecializationsUrl = servicesUrl + $"/api/Specializations/specialization/{doctorContent.SpecializationId}/min";
+        var fullOfficesUrl = officesUrl + $"/api/Offices/office/{doctorContent.OfficeId}";
+        var specializationContent = await _crudClient.GetAsync<SpecializationMinOutgoingDto>(fullSpecializationsUrl, authParam);
+        var officeContent = await _crudClient.GetAsync<OfficeResponse>(fullOfficesUrl, authParam);
+
+        var aggregated = _mapper.Map<DoctorProfileByDoctorAggregatedDto>(doctorContent);
+        aggregated.Spectialization = specializationContent;
+        aggregated.Office = _mapper.Map<OfficeAddressAggregatedDto>(officeContent);
+
+        return aggregated;
+    }
+
+    public async Task<DoctorProfileByDoctorAggregatedDto> GetDoctorProfileAsync(string authParam)
+    {
+        var officesUrl = _configuration.GetSection("ApiUrls").GetSection("AppointmentsUrl").Value;
+        var profilesUrl = _configuration.GetSection("ApiUrls").GetSection("ProfilesUrl").Value;
+        var servicesUrl = _configuration.GetSection("ApiUrls").GetSection("ServicesUrl").Value;
+
+        var fullDoctorUrl = profilesUrl + $"/api/Doctors/profile";
         var doctorContent = await _crudClient.GetAsync<DoctorOutgoingDto>(fullDoctorUrl, authParam);
 
         var fullSpecializationsUrl = servicesUrl + $"/api/Specializations/specialization/{doctorContent.SpecializationId}/min";

@@ -9,6 +9,7 @@ builder.Configuration
     .AddJsonFile("ocelot.json", false, true)
     .Build();
 
+builder.Services.AddCors();
 builder.Services.AddOcelot(builder.Configuration);
 
 var app = builder.Build();
@@ -17,6 +18,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
 }
+
+app.UseCors(e => {
+    e.AllowAnyOrigin();
+    e.AllowAnyMethod();
+    e.AllowAnyHeader();
+});
 
 app.UseOcelot().Wait();
 

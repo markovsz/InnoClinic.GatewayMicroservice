@@ -16,6 +16,7 @@ public interface IAggregatorsService
     Task<ResultAggregatedDto> GetResultByIdAsync(Guid resultId, string authParam);
     Task<DoctorProfileByPatientAggregatedDto> GetDoctorProfileByPatientAsync(Guid doctorId, string authParam);
     Task<DoctorProfileByDoctorAggregatedDto> GetDoctorProfileByDoctorAsync(Guid doctorId, string authParam);
+    Task<DoctorProfileByDoctorAggregatedDto> GetDoctorProfileAsync(string authParam);
     Task<DoctorProfileByReceptionistAggregatedDto> GetDoctorProfileByReceptionistAsync(Guid doctorId, string authParam);
     Task<IEnumerable<DoctorMinProfileAggregatedDto>> GetDoctorProfilesByPatientAsync(DoctorParameters parameters, string authParam);
 }

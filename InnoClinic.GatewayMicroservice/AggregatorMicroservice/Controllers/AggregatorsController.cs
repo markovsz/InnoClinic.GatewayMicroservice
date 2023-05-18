@@ -59,6 +59,14 @@ namespace AggregatorMicroservice.Controllers
             return Forbid();
         }
 
+        [HttpGet("Doctors/profile")]
+        public async Task<IActionResult> GetPatientProfileAsync(string? authParam)
+        {
+            var result = await _aggregatorsService.GetDoctorProfileAsync(authParam);
+            return Ok(result);
+        }
+
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
         [HttpGet("Doctors")]
         public async Task<IActionResult> GetDoctorProfilesAsync(DoctorParameters parameters, string authParam)
         {
