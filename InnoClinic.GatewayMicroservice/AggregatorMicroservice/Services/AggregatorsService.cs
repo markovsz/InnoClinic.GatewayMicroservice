@@ -207,7 +207,7 @@ public class AggregatorsService : IAggregatorsService
         var profilesUrl = _configuration.GetSection("ApiUrls").GetSection("ProfilesUrl").Value;
         var servicesUrl = _configuration.GetSection("ApiUrls").GetSection("ServicesUrl").Value;
 
-        var fullDoctorUrl = profilesUrl + $"/api/Doctors?" + ToRequestParams(parameters);
+        var fullDoctorUrl = profilesUrl + $"/api/Doctors/list?" + ToRequestParams(parameters);
         var doctorsContent = await _crudClient.GetAsync<DoctorsPaginationOutgoingDto>(fullDoctorUrl, authParam);
 
         var specializationIds = doctorsContent.Entities
