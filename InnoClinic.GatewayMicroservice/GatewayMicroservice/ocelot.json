@@ -396,9 +396,9 @@
       ]
     },
     {
-      "UpstreamPathTemplate": "/api/appointments/history",
+      "UpstreamPathTemplate": "/api/appointments/patient/{patientId}/history",
       "UpstreamHttpMethod": [ "Get" ],
-      "DownstreamPathTemplate": "/api/Appointments/history",
+      "DownstreamPathTemplate": "/api/Appointments/patient/{patientId}/history",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
