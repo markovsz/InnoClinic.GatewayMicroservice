@@ -38,9 +38,9 @@
       ]
     },
     {
-      "UpstreamPathTemplate": "/api/patients",
+      "UpstreamPathTemplate": "/api/patients/list",
       "UpstreamHttpMethod": [ "Get" ],
-      "DownstreamPathTemplate": "/api/Patients",
+      "DownstreamPathTemplate": "/api/Patients/list",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -146,9 +146,9 @@
       ]
     },
     {
-      "UpstreamPathTemplate": "/api/receptionists",
+      "UpstreamPathTemplate": "/api/receptionists/list",
       "UpstreamHttpMethod": [ "Get" ],
-      "DownstreamPathTemplate": "/api/Receptionists",
+      "DownstreamPathTemplate": "/api/Receptionists/list",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -372,7 +372,7 @@
 
     //Appointments
     {
-      "UpstreamPathTemplate": "/api/appointments",
+      "UpstreamPathTemplate": "/api/appointments/list",
       "UpstreamHttpMethod": [ "Post" ],
       "DownstreamPathTemplate": "/api/Appointments",
       "DownstreamScheme": "https",
@@ -437,7 +437,7 @@
 
     //Results
     {
-      "UpstreamPathTemplate": "/api/results",
+      "UpstreamPathTemplate": "/api/results/list",
       "UpstreamHttpMethod": [ "Post" ],
       "DownstreamPathTemplate": "/api/Results",
       "DownstreamScheme": "https",
@@ -623,7 +623,7 @@
       ]
     },
     {
-      "UpstreamPathTemplate": "/api/doctors",
+      "UpstreamPathTemplate": "/api/doctors/list",
       "UpstreamHttpMethod": [ "Get" ],
       "DownstreamPathTemplate": "/api/Aggregators/Doctors",
       "DownstreamScheme": "https",
