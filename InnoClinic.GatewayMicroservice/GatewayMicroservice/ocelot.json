@@ -705,6 +705,54 @@
           "Port": 7012
         }
       ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/patients/patient/{id}",
+      "UpstreamHttpMethod": [ "Put" ],
+      "DownstreamPathTemplate": "/api/Aggregators/Patient/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7012
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/doctors/doctor/{id}",
+      "UpstreamHttpMethod": [ "Put" ],
+      "DownstreamPathTemplate": "/api/Aggregators/Doctor/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7012
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/receptionists/receptionist/{id}",
+      "UpstreamHttpMethod": [ "Put" ],
+      "DownstreamPathTemplate": "/api/Aggregators/Receptionist/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7012
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/offices/office/{id}",
+      "UpstreamHttpMethod": [ "Put" ],
+      "DownstreamPathTemplate": "/api/Aggregators/Offices/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7012
+        }
+      ]
     }
   ]
 }
