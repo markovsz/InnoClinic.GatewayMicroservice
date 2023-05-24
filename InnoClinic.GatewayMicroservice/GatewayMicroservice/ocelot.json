@@ -492,7 +492,7 @@
     //Offices
     {
       "UpstreamPathTemplate": "/api/offices",
-      "UpstreamHttpMethod": [ "Get" ],
+      "UpstreamHttpMethod": [ "Post" ],
       "DownstreamPathTemplate": "/api/Offices",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
