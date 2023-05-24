@@ -17,7 +17,7 @@ public class ExtractJwtTokenAttribute : IActionFilter
         var roleClaim = context.HttpContext.Request.Headers.TryGetValue("Authorization", out var jwtTokenHeader);
         jwtToken = jwtTokenHeader.ToString().Split(' ')[1];
         if(jwtToken is null)
-            throw new InvalidOperationException("you aren't authorized");
+            throw new UnauthorizedAccessException("you aren't authorized");
         context.ActionArguments.Add("authParam", jwtToken);
     }
 }

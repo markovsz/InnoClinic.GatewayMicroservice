@@ -17,7 +17,7 @@ public class ExtractRoleAttribute : IActionFilter
             .Where(c => c.Type.Equals(ClaimTypes.Role))
             .FirstOrDefault();
         if (roleClaim is null)
-            throw new InvalidOperationException("there is no any role claim");
+            throw new UnauthorizedAccessException("there is no any role claim");
         context.ActionArguments.Add("roleName", roleClaim.Value);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using AggregatorMicroservice.Exceptions;
+using Newtonsoft.Json;
 using System.Net;
 
 namespace AggregatorMicroservice.Extensions;
@@ -18,13 +19,25 @@ public class ExceptionsHandler
         {
             await _next.Invoke(context);
         }
-        catch (InvalidOperationException ex)
+        catch (BadHttpRequestException ex)
         {
-            await HandleExceptionAsync(context, ex.Message, HttpStatusCode.InternalServerError);
+            await HandleExceptionAsync(context, ex.Message, HttpStatusCode.BadRequest);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            await HandleExceptionAsync(context, ex.Message, HttpStatusCode.Unauthorized);
+        }
+        catch (ForbiddenException ex)
+        {
+            await HandleExceptionAsync(context, ex.Message, HttpStatusCode.Forbidden);
+        }
+        catch (NotFoundException ex)
+        {
+            await HandleExceptionAsync(context, ex.Message, HttpStatusCode.NotFound);
         }
         catch (Exception ex)
         {
-            await HandleExceptionAsync(context, ex.Message, HttpStatusCode.InternalServerError);
+            await HandleExceptionAsync(context, "internal server error", HttpStatusCode.InternalServerError);
         }
     }
 

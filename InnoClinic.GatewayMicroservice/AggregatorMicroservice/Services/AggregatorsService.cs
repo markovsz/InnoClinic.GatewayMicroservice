@@ -207,7 +207,7 @@ public class AggregatorsService : IAggregatorsService
         var profilesUrl = _configuration.GetSection("ApiUrls").GetSection("ProfilesUrl").Value;
         var servicesUrl = _configuration.GetSection("ApiUrls").GetSection("ServicesUrl").Value;
 
-        var fullDoctorUrl = profilesUrl + $"/api/Doctors?" + ToRequestParams(parameters);
+        var fullDoctorUrl = profilesUrl + $"/api/Doctors/list?" + ToRequestParams(parameters);
         var doctorsContent = await _crudClient.GetAsync<DoctorsPaginationOutgoingDto>(fullDoctorUrl, authParam);
 
         var specializationIds = doctorsContent.Entities
@@ -283,6 +283,25 @@ public class AggregatorsService : IAggregatorsService
         return patientId;
     }
 
+    public async Task UpdatePatientAsync(Guid patientId, UpdatePatientAggregatedDto incomingDto, string authParam)
+    {
+        var profilesUrl = _configuration.GetSection("ApiUrls").GetSection("ProfilesUrl").Value;
+        var identityServerUrl = _configuration.GetSection("ApiUrls").GetSection("IdentityServerUrl").Value;
+        var documentsUrl = _configuration.GetSection("ApiUrls").GetSection("DocumentsUrl").Value;
+
+        var fullPhotosUrl = documentsUrl + $"/api/Documents/Photos";
+        var photoDto = incomingDto.Photo;
+        var photoCreatedDto = await _crudClient.PostAsync<DocumentIncomingDto, DocumentCreatedOutgoingDto>(fullPhotosUrl, photoDto, authParam);
+
+        var fullSignUpUrl = identityServerUrl + $"/api/Auth/photo";
+        await _crudClient.PutAsync<string>(fullSignUpUrl, photoCreatedDto.FilePath, authParam);
+
+        var fullPatientUrl = profilesUrl + $"/api/Patients/patient/{patientId}";
+        var patientDto = _mapper.Map<UpdatePatientIncomingDto>(incomingDto);
+        patientDto.PhotoUrl = photoCreatedDto.FilePath;
+        await _crudClient.PutAsync<UpdatePatientIncomingDto>(fullPatientUrl, patientDto, authParam);
+    }
+
     public async Task<Guid> CreateDoctorAsync(CreateDoctorAggregatedDto incomingDto, string authParam)
     {
         var profilesUrl = _configuration.GetSection("ApiUrls").GetSection("ProfilesUrl").Value;
@@ -307,6 +326,25 @@ public class AggregatorsService : IAggregatorsService
         var doctorId = await _crudClient.PostAsync<DoctorIncomingDto, Guid>(fullDoctorUrl, doctorDto, authParam);
 
         return doctorId;
+    }
+
+    public async Task UpdateDoctorAsync(Guid doctorId, UpdateDoctorAggregatedDto incomingDto, string authParam)
+    {
+        var profilesUrl = _configuration.GetSection("ApiUrls").GetSection("ProfilesUrl").Value;
+        var identityServerUrl = _configuration.GetSection("ApiUrls").GetSection("IdentityServerUrl").Value;
+        var documentsUrl = _configuration.GetSection("ApiUrls").GetSection("DocumentsUrl").Value;
+
+        var fullPhotosUrl = documentsUrl + $"/api/Documents/Photos";
+        var photoDto = incomingDto.Photo;
+        var photoCreatedDto = await _crudClient.PostAsync<DocumentIncomingDto, DocumentCreatedOutgoingDto>(fullPhotosUrl, photoDto, authParam);
+
+        var fullSignUpUrl = identityServerUrl + $"/api/Auth/photo";
+        await _crudClient.PutAsync<string>(fullSignUpUrl, photoCreatedDto.FilePath, authParam);
+
+        var fullDoctorUrl = profilesUrl + $"/api/Doctors/doctor/{doctorId}";
+        var doctorDto = _mapper.Map<UpdateDoctorIncomingDto>(incomingDto);
+        doctorDto.PhotoUrl = photoCreatedDto.FilePath;
+        await _crudClient.PutAsync<UpdateDoctorIncomingDto>(fullDoctorUrl, doctorDto, authParam);
     }
 
     public async Task<Guid> CreateReceptionistAsync(CreateReceptionistAggregatedDto incomingDto, string authParam)
@@ -336,6 +374,25 @@ public class AggregatorsService : IAggregatorsService
         return receptionistId;
     }
 
+    public async Task UpdateReceptionistAsync(Guid receptionistId, UpdateReceptionistAggregatedDto incomingDto, string authParam)
+    {
+        var profilesUrl = _configuration.GetSection("ApiUrls").GetSection("ProfilesUrl").Value;
+        var identityServerUrl = _configuration.GetSection("ApiUrls").GetSection("IdentityServerUrl").Value;
+        var documentsUrl = _configuration.GetSection("ApiUrls").GetSection("DocumentsUrl").Value;
+
+        var fullPhotosUrl = documentsUrl + $"/api/Documents/Photos";
+        var photoDto = incomingDto.Photo;
+        var photoCreatedDto = await _crudClient.PostAsync<DocumentIncomingDto, DocumentCreatedOutgoingDto>(fullPhotosUrl, photoDto, authParam);
+
+        var fullSignUpUrl = identityServerUrl + $"/api/Auth/photo";
+        await _crudClient.PutAsync<string>(fullSignUpUrl, photoCreatedDto.FilePath, authParam);
+
+        var fullReceptionistUrl = profilesUrl + $"/api/Receptionists/receptionist/{receptionistId}";
+        var receptionistDto = _mapper.Map<UpdateReceptionistIncomingDto>(incomingDto);
+        receptionistDto.PhotoUrl = photoCreatedDto.FilePath;
+        await _crudClient.PutAsync<UpdateReceptionistIncomingDto>(fullReceptionistUrl, receptionistDto, authParam);
+    }
+
     public async Task<Guid> CreateOfficeAsync(CreateOfficeAggregatedDto incomingDto, string authParam)
     {
         var officesUrl = _configuration.GetSection("ApiUrls").GetSection("OfficesUrl").Value;
@@ -351,6 +408,21 @@ public class AggregatorsService : IAggregatorsService
         var officeId = await _crudClient.PostAsync<CreateOfficeModel, Guid>(fullOfficesUrl, office, authParam);
 
         return officeId;
+    }
+
+    public async Task UpdateOfficeAsync(Guid officeId, UpdateOfficeAggregatedDto incomingDto, string authParam)
+    {
+        var officesUrl = _configuration.GetSection("ApiUrls").GetSection("OfficesUrl").Value;
+        var documentsUrl = _configuration.GetSection("ApiUrls").GetSection("DocumentsUrl").Value;
+
+        var fullPhotosUrl = documentsUrl + $"/api/Documents/Photos";
+        var photoDto = incomingDto.Photo;
+        var photoCreatedDto = await _crudClient.PostAsync<DocumentIncomingDto, DocumentCreatedOutgoingDto>(fullPhotosUrl, photoDto, authParam);
+
+        var fullOfficesUrl = officesUrl + $"/api/Offices/{officeId}";
+        var office = _mapper.Map<UpdateOfficeModel>(incomingDto);
+        office.PhotoUrl = photoCreatedDto.FilePath;
+        await _crudClient.PutAsync<UpdateOfficeModel>(fullOfficesUrl, office, authParam);
     }
 
 
