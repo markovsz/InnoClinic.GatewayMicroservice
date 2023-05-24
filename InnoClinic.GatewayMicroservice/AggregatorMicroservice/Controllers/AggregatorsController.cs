@@ -109,5 +109,33 @@ namespace AggregatorMicroservice.Controllers
             var id = await _aggregatorsService.CreateOfficeAsync(aggregatedDto, authParam);
             return Created("", id);
         }
+
+        [HttpPut("Patient/{id}")]
+        public async Task<IActionResult> UpdatePatientAsync(Guid id, UpdatePatientAggregatedDto aggregatedDto, string? authParam)
+        {
+            await _aggregatorsService.UpdatePatientAsync(id, aggregatedDto, authParam);
+            return NoContent();
+        }
+
+        [HttpPut("Doctor/{id}")]
+        public async Task<IActionResult> UpdateDoctorAsync(Guid id, UpdateDoctorAggregatedDto aggregatedDto, string? authParam)
+        {
+            await _aggregatorsService.UpdateDoctorAsync(id, aggregatedDto, authParam);
+            return NoContent();
+        }
+
+        [HttpPut("Receptionist/{id}")]
+        public async Task<IActionResult> UpdateReceptionistAsync(Guid id, UpdateReceptionistAggregatedDto aggregatedDto, string? authParam)
+        {
+            await _aggregatorsService.UpdateReceptionistAsync(id, aggregatedDto, authParam);
+            return NoContent();
+        }
+
+        [HttpPut("Offices/{id}")]
+        public async Task<IActionResult> UpdateOfficeAsync(Guid id, UpdateOfficeAggregatedDto aggregatedDto, string? authParam)
+        {
+            await _aggregatorsService.UpdateOfficeAsync(id, aggregatedDto, authParam);
+            return NoContent();
+        }
     }
 }
