@@ -54,4 +54,19 @@ public class HttpCrudClient : IHttpCrudClient
         var content = JsonConvert.DeserializeObject<TOut>(responseBody);
         return content;
     }
+
+    public async Task PutAsync<TIn>(string uri, TIn entity, string? authParam)
+    {
+        var httpContext = _httpClientFactory.CreateClient();
+        var data = JsonConvert.SerializeObject(entity);
+        var requestContent = new HttpRequestMessage(HttpMethod.Put, uri);
+        requestContent.Content = new StringContent(data);
+        requestContent.Content.Headers.Remove("Content-Type");
+        requestContent.Content.Headers.Add("Content-Type", "application/json");
+        if (authParam is not null)
+            httpContext.DefaultRequestHeaders.Add("Authorization", "Bearer " + authParam);
+        var response = await httpContext.SendAsync(requestContent);
+        if (!response.IsSuccessStatusCode)
+            throw new Exception(await response.Content.ReadAsStringAsync());
+    }
 }

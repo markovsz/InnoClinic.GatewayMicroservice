@@ -118,5 +118,28 @@ namespace AggregatorMicroservice.Controllers
             return Created("", id);
         }
 
+        [HttpPut("Doctors/doctor/{doctorId}")]
+        public async Task<IActionResult> UpdateDoctorAsync([FromBody] UpdateDoctorAggregatedDto updateDto, Guid doctorId, string? authParam)
+        {
+            await _aggregatorsService.UpdateDoctorAsync(doctorId, updateDto, authParam);
+            return NoContent();
+        }
+
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
+        [HttpPut("Receptionists/receptionist/{receptionistId}")]
+        public async Task<IActionResult> UpdateDoctorAsync([FromBody] UpdateReceptionistAggregatedDto updateDto, Guid receptionistId, string? authParam)
+        {
+            await _aggregatorsService.UpdateReceptionistAsync(receptionistId, updateDto, authParam);
+            return NoContent();
+        }
+
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
+        [HttpPut("Patients/patient/{patientId}")]
+        public async Task<IActionResult> UpdatePatientAsync([FromBody] UpdatePatientAggregatedDto updateDto, Guid patientId, string? authParam)
+        {
+            await _aggregatorsService.UpdatePatientAsync(patientId, updateDto, authParam);
+            return NoContent();
+        }
+        }
     }
 }
