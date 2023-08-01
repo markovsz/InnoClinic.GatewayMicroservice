@@ -11,6 +11,7 @@ public interface IAggregatorsService
     Task<Guid> CreateDoctorAsync(CreateDoctorAggregatedDto incomingDto, string authParam);
     Task<Guid> CreateReceptionistAsync(CreateReceptionistAggregatedDto incomingDto, string authParam);
     Task<Guid> CreateOfficeAsync(CreateOfficeAggregatedDto incomingDto, string authParam);
+    Task<Guid> CreateAppointmentAsync(CreateAppointmentAggregatedDto incomingDto, string authParam);
     Task<IEnumerable<AppointmentByReceptionistAggregatedDto>> GetAppointmentsByReceptionistAsync(AppointmentParameters parameters, string authParam);
     Task<IEnumerable<AppointmentScheduleByDoctorAggregatedDto>> GetAppointmentsScheduleByDoctorAsync(ScheduleParameters parameters, string authParam);
     Task<ResultAggregatedDto> GetResultByIdAsync(Guid resultId, string authParam);

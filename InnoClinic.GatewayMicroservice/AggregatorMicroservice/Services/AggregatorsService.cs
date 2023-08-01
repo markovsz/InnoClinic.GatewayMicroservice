@@ -353,6 +353,56 @@ public class AggregatorsService : IAggregatorsService
         return officeId;
     }
 
+    public async Task<Guid> CreateAppointmentAsync(CreateAppointmentAggregatedDto incomingDto, string authParam)
+    {
+        var servicesUrl = _configuration.GetSection("ApiUrls").GetSection("ServicesUrl").Value;
+        var doctorsUrl = _configuration.GetSection("ApiUrls").GetSection("ProfilesUrl").Value;
+        var appointmentsUrl = _configuration.GetSection("ApiUrls").GetSection("AppointmentsUrl").Value;
+        var officesUrl = _configuration.GetSection("ApiUrls").GetSection("OfficesUrl").Value;
+
+        var appointment = _mapper.Map<AppointmentIncomingDto>(incomingDto);
+
+        var fullServicesUrl = servicesUrl + $"/api/Services/service/{incomingDto.ServiceId}/min";
+        var service = await _crudClient.GetAsync<ServiceMinOutgoingDto>(fullServicesUrl, authParam);
+        if (service is null)
+            throw new Exception("service doesnt exist");
+
+        var fullDoctorsUrl = doctorsUrl + $"/api/Doctors/doctor/{incomingDto.DoctorId}";
+        var doctor = await _crudClient.GetAsync<DoctorOutgoingDto>(fullDoctorsUrl, authParam);
+
+        appointment.ServiceName = service.Name;
+        appointment.DoctorFirstName = doctor.FirstName;
+        appointment.DoctorLastName = doctor.LastName;
+        appointment.DoctorMiddleName = doctor.MiddleName;
+
+
+
+        var fullOfficesUrl = officesUrl + $"/api/Offices/office/{appointment.OfficeId}";
+        var officeContent = await _crudClient.GetAsync<OfficeResponse>(fullOfficesUrl, authParam);
+        if (officeContent is null)
+            throw new Exception("office doesnt exist");
+
+        var fullSpecializationsUrl = servicesUrl + $"/api/Specializations/specialization/{doctor.SpecializationId}/min";
+        var specializationContent = await _crudClient.GetAsync<SpecializationMinOutgoingDto>(fullSpecializationsUrl, authParam);
+        if (specializationContent is null)
+            throw new Exception("specialization doesnt exist");
+
+
+
+        var timeSlotDto = new CheckTimeSlotDto();
+        timeSlotDto.DateTime = incomingDto.DateTime;
+        timeSlotDto.DoctorId = incomingDto.DoctorId;
+        timeSlotDto.ServiceId = incomingDto.ServiceId;
+        bool isValidTimeSlot = await CheckTimeSlotAsync(timeSlotDto, authParam);
+
+        if (!isValidTimeSlot)
+            throw new Exception();
+        var fullAppointmentsUrl = appointmentsUrl + $"/api/Appointments";
+        var appointmentId = await _crudClient.PostAsync<AppointmentIncomingDto, Guid>(fullAppointmentsUrl, appointment, authParam);
+
+        return appointmentId;
+    }
+
 
     private string ToRequestParams<TParam>(TParam param)
     {

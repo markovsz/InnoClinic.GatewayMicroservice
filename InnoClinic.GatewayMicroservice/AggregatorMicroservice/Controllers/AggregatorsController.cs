@@ -109,5 +109,14 @@ namespace AggregatorMicroservice.Controllers
             var id = await _aggregatorsService.CreateOfficeAsync(aggregatedDto, authParam);
             return Created("", id);
         }
+
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
+        [HttpPost("Appointments")]
+        public async Task<IActionResult> CreateAppointmentAsync(CreateAppointmentAggregatedDto aggregatedDto, string? authParam)
+        {
+            var id = await _aggregatorsService.CreateAppointmentAsync(aggregatedDto, authParam);
+            return Created("", id);
+        }
+
     }
 }
