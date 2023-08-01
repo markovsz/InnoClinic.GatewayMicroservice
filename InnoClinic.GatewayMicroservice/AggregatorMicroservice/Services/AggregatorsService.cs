@@ -403,6 +403,22 @@ public class AggregatorsService : IAggregatorsService
         return appointmentId;
     }
 
+    public async Task<ReceptionistProfileAggregatedDto> GetReceptionistProfileAsync(string authParam)
+    {
+        var identityUrl = _configuration.GetSection("ApiUrls").GetSection("IdentityServerUrl").Value;
+        var profilesUrl = _configuration.GetSection("ApiUrls").GetSection("ProfilesUrl").Value;
+
+        var fullReceptionistUrl = profilesUrl + $"/api/Receptionists/profile";
+        var receptionistContent = await _crudClient.GetAsync<ReceptionistOutgoingDto>(fullReceptionistUrl, authParam);
+
+        var fullAccountUrl = identityUrl + $"/api/Auth/account";
+        var accountContent = await _crudClient.GetAsync<AccountOutgoingDto>(fullAccountUrl, authParam);
+
+        var aggregated = _mapper.Map<ReceptionistProfileAggregatedDto>(receptionistContent);
+        aggregated.PhotoUrl = accountContent.PhotoUrl;
+        return aggregated;
+    }
+
     public async Task UpdateDoctorAsync(Guid doctorId, UpdateDoctorAggregatedDto aggregatedDto, string authParam)
     {
         var identityUrl = _configuration.GetSection("ApiUrls").GetSection("IdentityServerUrl").Value;

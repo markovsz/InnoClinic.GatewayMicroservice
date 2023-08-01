@@ -118,6 +118,13 @@ namespace AggregatorMicroservice.Controllers
             return Created("", id);
         }
 
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
+        [HttpGet("Receptionists/profile")]
+        public async Task<IActionResult> GetReceptionistProfileAsync(string? authParam)
+        {
+            var receptionist = await _aggregatorsService.GetReceptionistProfileAsync(authParam);
+            return Ok(receptionist);
+        }
         [HttpPut("Doctors/doctor/{doctorId}")]
         public async Task<IActionResult> UpdateDoctorAsync([FromBody] UpdateDoctorAggregatedDto updateDto, Guid doctorId, string? authParam)
         {

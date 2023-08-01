@@ -25,6 +25,7 @@ public class MappingProfile : Profile
 		CreateMap<AppointmentScheduleByDoctorOutgoingDto, AppointmentScheduleByDoctorAggregatedDto>();
 		CreateMap<ResultOutgoingDto, ResultAggregatedDto>();
 		CreateMap<AppointmentForResultOutgoingDto, AppointmentForResultAggregatedDto>();
+		CreateMap<ReceptionistOutgoingDto, ReceptionistProfileAggregatedDto>();
 		CreateMap<UpdateReceptionistAggregatedDto, UpdateReceptionistIncomingDto>();
 		CreateMap<UpdatePatientAggregatedDto, UpdatePatientIncomingDto>();
 		CreateMap<UpdateDoctorAggregatedDto, UpdateDoctorIncomingDto>();
