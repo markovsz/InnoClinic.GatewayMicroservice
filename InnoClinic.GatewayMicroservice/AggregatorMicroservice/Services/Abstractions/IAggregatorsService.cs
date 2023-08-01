@@ -26,6 +26,7 @@ public interface IAggregatorsService
     Task<ReceptionistProfileAggregatedDto> GetReceptionistByIdAsync(Guid id, string authParam);
     Task<ReceptionistProfileAggregatedDto> GetReceptionistProfileAsync(string authParam);
     Task<IEnumerable<ReceptionistsListItemAggregatedDto>> GetReceptionistsAsync(string authParam);
+    Task<IEnumerable<DateTime>> GetTimeSlotsAsync(TimeSlotAggregatedParameters parameters, string authParam);
     Task UpdateDoctorAsync(Guid doctorId, UpdateDoctorAggregatedDto aggregatedDto, string authParam);
     Task UpdateReceptionistAsync(Guid receptionistId, UpdateReceptionistAggregatedDto aggregatedDto, string authParam);
     Task UpdatePatientAsync(Guid patientId, UpdatePatientAggregatedDto aggregatedDto, string authParam);

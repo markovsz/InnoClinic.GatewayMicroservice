@@ -34,6 +34,7 @@ public class MappingProfile : Profile
 		CreateMap<UpdateReceptionistAggregatedDto, UpdateReceptionistIncomingDto>();
 		CreateMap<UpdatePatientAggregatedDto, UpdatePatientIncomingDto>();
 		CreateMap<UpdateDoctorAggregatedDto, UpdateDoctorIncomingDto>();
+		CreateMap<TimeSlotAggregatedParameters, TimeSlotParameters>();
 		CreateMap<PatientOutgoingDto, PatientProfileAggregatedDto>();
 	}
 }

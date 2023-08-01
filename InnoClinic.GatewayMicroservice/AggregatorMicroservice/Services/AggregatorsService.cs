@@ -522,8 +522,143 @@ public class AggregatorsService : IAggregatorsService
         }
         return aggregatedReceptionists;
     }
+    public async Task<IEnumerable<DateTime>> GetTimeSlotsAsync(TimeSlotAggregatedParameters parameters, string authParam)
+    {
+        var servicesUrl = _configuration.GetSection("ApiUrls").GetSection("ServicesUrl").Value;
+        var appointmentsUrl = _configuration.GetSection("ApiUrls").GetSection("AppointmentsUrl").Value;
 
+        var fullServiceUrl = servicesUrl + $"/api/Services/service/{parameters.ServiceId}/min";
+        var serviceContent = await _crudClient.GetAsync<ServiceMinOutgoingDto>(fullServiceUrl, authParam);
+        
+
+        var mappedParams = _mapper.Map<TimeSlotParameters>(parameters);
+
+        var fullAppointmentUrl = appointmentsUrl + $"/api/Appointments/orderedTimeSlots?" + ToRequestParams(parameters);
+        var orderedTimeSlots = await _crudClient.GetAsync<List<TimeSlotAppointmentOutgoingDto>>(fullAppointmentUrl, authParam);
+
+        var serviceIds = orderedTimeSlots
+            .Select(e => e.ServiceId)
+            .Distinct()
+            .ToList();
+
+        var fullServicesUrl = servicesUrl + $"/api/Services/ids";
+        var servicesContent = await _crudClient.PostAsync<IEnumerable<Guid>, IEnumerable<ServiceMinOutgoingDto>>(fullServicesUrl, serviceIds, authParam);
+
+        var timeSlotSizes = new List<int>();
+        foreach (var orderedTimeSlot in orderedTimeSlots)
+        {
+            var timeSlotSize = servicesContent
+                .Where(e => e.Id == orderedTimeSlot.ServiceId)
+                .Select(e => e.Category.TimeSlotSize)
+                .FirstOrDefault();
+
+            timeSlotSizes.Add(timeSlotSize);
     }
+
+        var minTimeSlotSize = 10;
+        var categoryTimeSlotSize = serviceContent.Category.TimeSlotSize;
+
+        var minWorkingTime = new DateTime(parameters.Year, parameters.Month, parameters.Day, 8, 0, 0);
+        var maxWorkingTime = new DateTime(parameters.Year, parameters.Month, parameters.Day, 18, 0, 0);
+
+
+        var timeSlots = new List<DateTime>();
+        int orderedTimeSlotIndex = 0;
+        var minWorkingTimeInMinutes = minWorkingTime.Hour * 60 + minWorkingTime.Minute;
+        var maxWorkingTimeInMinutes = maxWorkingTime.Hour * 60 + maxWorkingTime.Minute;
+        for (int timeSlot = minWorkingTimeInMinutes; timeSlot < maxWorkingTimeInMinutes; timeSlot += minTimeSlotSize)
+        {
+            if(orderedTimeSlotIndex < orderedTimeSlots.Count)
+            {
+                var orderedTimeSlotInMinutes = orderedTimeSlots[orderedTimeSlotIndex].DateTime.Hour * 60 + orderedTimeSlots[orderedTimeSlotIndex].DateTime.Minute;
+                var endOfTimeSlot = timeSlot + categoryTimeSlotSize;
+                if (endOfTimeSlot <= orderedTimeSlotInMinutes && endOfTimeSlot <= maxWorkingTimeInMinutes || (orderedTimeSlotIndex + 1) == orderedTimeSlots.Count)
+                {
+                    timeSlots.Add(new DateTime(parameters.Year, parameters.Month, parameters.Day, timeSlot / 60, timeSlot % 60, 0));
+                }
+                else
+                {
+                    timeSlot = orderedTimeSlotInMinutes + timeSlotSizes[orderedTimeSlotIndex];
+                    timeSlot -= minTimeSlotSize;
+                    if ((orderedTimeSlotIndex + 1) < orderedTimeSlots.Count)
+                        ++orderedTimeSlotIndex;
+                }
+            }
+            else 
+            {
+                timeSlots.Add(new DateTime(parameters.Year, parameters.Month, parameters.Day, timeSlot / 60, timeSlot % 60, 0));
+            }
+        }
+
+        return timeSlots;
+    }
+
+    public async Task<bool> CheckTimeSlotAsync(CheckTimeSlotDto timeSlotDto, string authParam)
+    {
+        var servicesUrl = _configuration.GetSection("ApiUrls").GetSection("ServicesUrl").Value;
+        var doctorsUrl = _configuration.GetSection("ApiUrls").GetSection("ProfilesUrl").Value;
+        var appointmentsUrl = _configuration.GetSection("ApiUrls").GetSection("AppointmentsUrl").Value;
+        var officesUrl = _configuration.GetSection("ApiUrls").GetSection("OfficesUrl").Value;
+
+        var fullServicesUrl = servicesUrl + $"/api/Services/service/{timeSlotDto.ServiceId}/min";
+        var service = await _crudClient.GetAsync<ServiceMinOutgoingDto>(fullServicesUrl, authParam);
+        if (service is null)
+            throw new Exception("service doesn't exist");
+
+        var fullDoctorsUrl = doctorsUrl + $"/api/Doctors/doctor/{timeSlotDto.DoctorId}";
+        var doctor = await _crudClient.GetAsync<DoctorOutgoingDto>(fullDoctorsUrl, authParam);
+
+        var parameters = new TimeSlotParameters();
+        parameters.Day = timeSlotDto.DateTime.Day;
+        parameters.Month = timeSlotDto.DateTime.Month;
+        parameters.Year = timeSlotDto.DateTime.Year;
+        parameters.DoctorId = timeSlotDto.DoctorId;
+
+        var fullAppointmentUrl = appointmentsUrl + $"/api/Appointments/orderedTimeSlots?" + ToRequestParams(parameters);
+        var orderedTimeSlots = await _crudClient.GetAsync<List<TimeSlotAppointmentOutgoingDto>>(fullAppointmentUrl, authParam);
+
+        var serviceIds = orderedTimeSlots
+            .Select(e => e.ServiceId)
+            .Distinct()
+            .ToList();
+
+        var fullServicesIdsUrl = servicesUrl + $"/api/Services/ids";
+        var servicesContent = await _crudClient.PostAsync<IEnumerable<Guid>, IEnumerable<ServiceMinOutgoingDto>>(fullServicesIdsUrl, serviceIds, authParam);
+
+        var timeSlotSizes = new List<int>();
+        foreach (var orderedTimeSlot in orderedTimeSlots)
+        {
+            var timeSlotSize = servicesContent
+                .Where(e => e.Id == orderedTimeSlot.ServiceId)
+                .Select(e => e.Category.TimeSlotSize)
+                .FirstOrDefault();
+
+            timeSlotSizes.Add(timeSlotSize);
+    }
+
+        var minTimeSlotSize = 10;
+        var categoryTimeSlotSize = service.Category.TimeSlotSize;
+
+        var minWorkingTime = new DateTime(parameters.Year, parameters.Month, parameters.Day, 8, 0, 0);
+        var maxWorkingTime = new DateTime(parameters.Year, parameters.Month, parameters.Day, 18, 0, 0);
+
+        int orderedTimeSlotIndex = 0;
+        var minWorkingTimeInMinutes = minWorkingTime.Hour * 60 + minWorkingTime.Minute;
+        var maxWorkingTimeInMinutes = maxWorkingTime.Hour * 60 + maxWorkingTime.Minute;
+
+        var timeSlotBegin = timeSlotDto.DateTime.Hour * 60 + timeSlotDto.DateTime.Minute;
+        var timeSlotEnd = timeSlotBegin + categoryTimeSlotSize;
+        bool isValidTimeSlot = true;
+        foreach (var orderedTimeSlot in orderedTimeSlots)
+        {
+            var orderedTimeSlotBegin = orderedTimeSlot.DateTime.Hour * 60 + orderedTimeSlot.DateTime.Minute;
+            var orderedTimeSlotEnd = orderedTimeSlotBegin + timeSlotSizes[orderedTimeSlotIndex];
+            if (timeSlotEnd > orderedTimeSlotBegin && orderedTimeSlotEnd > timeSlotBegin) isValidTimeSlot = false;
+            ++orderedTimeSlotIndex;
+        }
+        return isValidTimeSlot;
+    }
+
     public async Task UpdateDoctorAsync(Guid doctorId, UpdateDoctorAggregatedDto aggregatedDto, string authParam)
     {
         var identityUrl = _configuration.GetSection("ApiUrls").GetSection("IdentityServerUrl").Value;
