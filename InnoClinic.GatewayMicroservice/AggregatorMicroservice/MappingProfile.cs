@@ -25,9 +25,14 @@ public class MappingProfile : Profile
 		CreateMap<AppointmentScheduleByDoctorOutgoingDto, AppointmentScheduleByDoctorAggregatedDto>();
 		CreateMap<ResultOutgoingDto, ResultAggregatedDto>();
 		CreateMap<AppointmentForResultOutgoingDto, AppointmentForResultAggregatedDto>();
+		CreateMap<SpecializationOutgoingDto, SpecializationMinOutgoingDto>();
+		CreateMap<DoctorOutgoingDto, DoctorProfileByPatientAggregatedDto>();
+		CreateMap<DoctorOutgoingDto, DoctorProfileByDoctorAggregatedDto>();
+		CreateMap<DoctorOutgoingDto, DoctorProfileByReceptionistAggregatedDto>();
 		CreateMap<ReceptionistOutgoingDto, ReceptionistProfileAggregatedDto>();
 		CreateMap<UpdateReceptionistAggregatedDto, UpdateReceptionistIncomingDto>();
 		CreateMap<UpdatePatientAggregatedDto, UpdatePatientIncomingDto>();
 		CreateMap<UpdateDoctorAggregatedDto, UpdateDoctorIncomingDto>();
+		CreateMap<PatientOutgoingDto, PatientProfileAggregatedDto>();
 	}
 }

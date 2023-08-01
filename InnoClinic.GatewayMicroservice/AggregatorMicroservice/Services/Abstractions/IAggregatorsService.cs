@@ -1,4 +1,5 @@
 ﻿using AggregatorMicroservice.Models.DTOs.Aggregated;
+using AggregatorMicroservice.Models.Parameters;
 using InnoClinic.SharedModels.DTOs.Appointments.RequestParameters;
 using InnoClinic.SharedModels.DTOs.Profiles.RequestParameters;
 
@@ -19,7 +20,10 @@ public interface IAggregatorsService
     Task<DoctorProfileByDoctorAggregatedDto> GetDoctorProfileByDoctorAsync(Guid doctorId, string authParam);
     Task<DoctorProfileByDoctorAggregatedDto> GetDoctorProfileAsync(string authParam);
     Task<DoctorProfileByReceptionistAggregatedDto> GetDoctorProfileByReceptionistAsync(Guid doctorId, string authParam);
-    Task<IEnumerable<DoctorMinProfileAggregatedDto>> GetDoctorProfilesByPatientAsync(DoctorParameters parameters, string authParam);
+    Task<DoctorPaginationAggregatedDto> GetDoctorProfilesByPatientAsync(DoctorParameters parameters, string authParam);
+    Task<PatientProfileAggregatedDto> GetPatientProfileByIdAsync(Guid doctorId, string authParam);
+    Task<PatientProfileAggregatedDto> GetPatientProfileByAccountIdAsync(string authParam);
+    Task<ReceptionistProfileAggregatedDto> GetReceptionistByIdAsync(Guid id, string authParam);
     Task<ReceptionistProfileAggregatedDto> GetReceptionistProfileAsync(string authParam);
     Task UpdateDoctorAsync(Guid doctorId, UpdateDoctorAggregatedDto aggregatedDto, string authParam);
     Task UpdateReceptionistAsync(Guid receptionistId, UpdateReceptionistAggregatedDto aggregatedDto, string authParam);

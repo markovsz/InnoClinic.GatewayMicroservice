@@ -116,23 +116,63 @@ public class AggregatorsService : IAggregatorsService
         return aggregated;
     }
 
+    public async Task<PatientProfileAggregatedDto> GetPatientProfileByAccountIdAsync(string authParam)
+    {
+        var identityUrl = _configuration.GetSection("ApiUrls").GetSection("IdentityServerUrl").Value;
+        var profilesUrl = _configuration.GetSection("ApiUrls").GetSection("ProfilesUrl").Value;
+
+        var fullPatientUrl = profilesUrl + $"/api/Patients/profile";
+        var patientContent = await _crudClient.GetAsync<PatientOutgoingDto>(fullPatientUrl, authParam);
+
+        var fullAccountUrl = identityUrl + $"/api/Auth/account";
+        var accountContent = await _crudClient.GetAsync<AccountOutgoingDto>(fullAccountUrl, authParam);
+
+        var aggregated = _mapper.Map<PatientProfileAggregatedDto>(patientContent);
+        aggregated.PhotoUrl = accountContent.PhotoUrl;
+        return aggregated;
+    }
+
+    public async Task<PatientProfileAggregatedDto> GetPatientProfileByIdAsync(Guid patientId, string authParam)
+    {
+        var identityUrl = _configuration.GetSection("ApiUrls").GetSection("IdentityServerUrl").Value;
+        var profilesUrl = _configuration.GetSection("ApiUrls").GetSection("ProfilesUrl").Value;
+
+        var fullPatientUrl = profilesUrl + $"/api/Patients/patient/{patientId}";
+        var patientContent = await _crudClient.GetAsync<PatientOutgoingDto>(fullPatientUrl, authParam);
+
+        var fullAccountUrl = identityUrl + $"/api/Auth/account/{patientContent.AccountId}/info";
+        var accountContent = await _crudClient.GetAsync<AccountOutgoingDto>(fullAccountUrl, authParam);
+
+        var aggregated = _mapper.Map<PatientProfileAggregatedDto>(patientContent);
+        aggregated.PhotoUrl = accountContent.PhotoUrl;
+        return aggregated;
+    }
+
     public async Task<DoctorProfileByPatientAggregatedDto> GetDoctorProfileByPatientAsync(Guid doctorId, string authParam)
     {
-        var officesUrl = _configuration.GetSection("ApiUrls").GetSection("AppointmentsUrl").Value;
+        var identityUrl = _configuration.GetSection("ApiUrls").GetSection("IdentityServerUrl").Value;
+        var officesUrl = _configuration.GetSection("ApiUrls").GetSection("OfficesUrl").Value;
         var profilesUrl = _configuration.GetSection("ApiUrls").GetSection("ProfilesUrl").Value;
         var servicesUrl = _configuration.GetSection("ApiUrls").GetSection("ServicesUrl").Value;
 
         var fullDoctorUrl = profilesUrl + $"/api/Doctors/doctor/{doctorId}";
         var doctorContent = await _crudClient.GetAsync<DoctorOutgoingDto>(fullDoctorUrl, authParam);
 
-        var fullSpecializationsUrl = servicesUrl + $"/api/Specializations/specialization/{doctorContent.SpecializationId}/min";
+        var fullAccountUrl = identityUrl + $"/api/Auth/account/{doctorContent.AccountId}/info";
+        var accountContent = await _crudClient.GetAsync<AccountOutgoingDto>(fullAccountUrl, authParam);
+
+        var fullMinSpecializationUrl = servicesUrl + $"/api/Specializations/specialization/{doctorContent.SpecializationId}/min";
+        var fullSpecializationUrl = servicesUrl + $"/api/Specializations/specialization/{doctorContent.SpecializationId}";
         var fullOfficesUrl = officesUrl + $"/api/Offices/office/{doctorContent.OfficeId}";
         var specializationContent = await _crudClient.GetAsync<SpecializationMinOutgoingDto>(fullSpecializationsUrl, authParam);
         var officeContent = await _crudClient.GetAsync<OfficeResponse>(fullOfficesUrl, authParam);
-        var servicesContent = await _crudClient.GetAsync<IEnumerable<ServiceMinOutgoingDto>>(fullOfficesUrl, authParam);
+        var fullSpecializationsContent = await _crudClient.GetAsync<SpecializationOutgoingDto>(fullSpecializationUrl, authParam);
+        var specializationContent = _mapper.Map<SpecializationMinOutgoingDto>(fullSpecializationsContent);
+        var servicesContent = fullSpecializationsContent.Services;
 
         var aggregated = _mapper.Map<DoctorProfileByPatientAggregatedDto>(doctorContent);
-        aggregated.Spectialization = specializationContent;
+        aggregated.PhotoUrl = accountContent.PhotoUrl;
+        aggregated.Specialization = specializationContent;
         aggregated.Office = _mapper.Map<OfficeAddressAggregatedDto>(officeContent);
         aggregated.Services = servicesContent;
         return aggregated;
@@ -140,12 +180,16 @@ public class AggregatorsService : IAggregatorsService
 
     public async Task<DoctorProfileByDoctorAggregatedDto> GetDoctorProfileByDoctorAsync(Guid doctorId, string authParam)
     {
-        var officesUrl = _configuration.GetSection("ApiUrls").GetSection("AppointmentsUrl").Value;
+        var identityUrl = _configuration.GetSection("ApiUrls").GetSection("IdentityServerUrl").Value;
+        var officesUrl = _configuration.GetSection("ApiUrls").GetSection("OfficesUrl").Value;
         var profilesUrl = _configuration.GetSection("ApiUrls").GetSection("ProfilesUrl").Value;
         var servicesUrl = _configuration.GetSection("ApiUrls").GetSection("ServicesUrl").Value;
 
         var fullDoctorUrl = profilesUrl + $"/api/Doctors/doctor/{doctorId}";
         var doctorContent = await _crudClient.GetAsync<DoctorOutgoingDto>(fullDoctorUrl, authParam);
+
+        var fullAccountUrl = identityUrl + $"/api/Auth/account/{doctorContent.AccountId}/info";
+        var accountContent = await _crudClient.GetAsync<AccountOutgoingDto>(fullAccountUrl, authParam);
 
         var fullSpecializationsUrl = servicesUrl + $"/api/Specializations/specialization/{doctorContent.SpecializationId}/min";
         var fullOfficesUrl = officesUrl + $"/api/Offices/office/{doctorContent.OfficeId}";
@@ -153,7 +197,8 @@ public class AggregatorsService : IAggregatorsService
         var officeContent = await _crudClient.GetAsync<OfficeResponse>(fullOfficesUrl, authParam);
 
         var aggregated = _mapper.Map<DoctorProfileByDoctorAggregatedDto>(doctorContent);
-        aggregated.Spectialization = specializationContent;
+        aggregated.PhotoUrl = accountContent.PhotoUrl;
+        aggregated.Specialization = specializationContent;
         aggregated.Office = _mapper.Map<OfficeAddressAggregatedDto>(officeContent);
 
         return aggregated;
@@ -161,9 +206,13 @@ public class AggregatorsService : IAggregatorsService
 
     public async Task<DoctorProfileByDoctorAggregatedDto> GetDoctorProfileAsync(string authParam)
     {
-        var officesUrl = _configuration.GetSection("ApiUrls").GetSection("AppointmentsUrl").Value;
+        var identityUrl = _configuration.GetSection("ApiUrls").GetSection("IdentityServerUrl").Value;
+        var officesUrl = _configuration.GetSection("ApiUrls").GetSection("OfficesUrl").Value;
         var profilesUrl = _configuration.GetSection("ApiUrls").GetSection("ProfilesUrl").Value;
         var servicesUrl = _configuration.GetSection("ApiUrls").GetSection("ServicesUrl").Value;
+
+        var fullAccountUrl = identityUrl + $"/api/Auth/account";
+        var accountContent = await _crudClient.GetAsync<AccountOutgoingDto>(fullAccountUrl, authParam);
 
         var fullDoctorUrl = profilesUrl + $"/api/Doctors/profile";
         var doctorContent = await _crudClient.GetAsync<DoctorOutgoingDto>(fullDoctorUrl, authParam);
@@ -174,7 +223,8 @@ public class AggregatorsService : IAggregatorsService
         var officeContent = await _crudClient.GetAsync<OfficeResponse>(fullOfficesUrl, authParam);
 
         var aggregated = _mapper.Map<DoctorProfileByDoctorAggregatedDto>(doctorContent);
-        aggregated.Spectialization = specializationContent;
+        aggregated.Specialization = specializationContent;
+        aggregated.PhotoUrl = accountContent.PhotoUrl;
         aggregated.Office = _mapper.Map<OfficeAddressAggregatedDto>(officeContent);
 
         return aggregated;
@@ -182,12 +232,16 @@ public class AggregatorsService : IAggregatorsService
 
     public async Task<DoctorProfileByReceptionistAggregatedDto> GetDoctorProfileByReceptionistAsync(Guid doctorId, string authParam)
     {
-        var officesUrl = _configuration.GetSection("ApiUrls").GetSection("AppointmentsUrl").Value;
+        var identityUrl = _configuration.GetSection("ApiUrls").GetSection("IdentityServerUrl").Value;
+        var officesUrl = _configuration.GetSection("ApiUrls").GetSection("OfficesUrl").Value;
         var profilesUrl = _configuration.GetSection("ApiUrls").GetSection("ProfilesUrl").Value;
         var servicesUrl = _configuration.GetSection("ApiUrls").GetSection("ServicesUrl").Value;
 
         var fullDoctorUrl = profilesUrl + $"/api/Doctors/doctor/{doctorId}";
         var doctorContent = await _crudClient.GetAsync<DoctorOutgoingDto>(fullDoctorUrl, authParam);
+
+        var fullAccountUrl = identityUrl + $"/api/Auth/account/{doctorContent.AccountId}/info";
+        var accountContent = await _crudClient.GetAsync<AccountOutgoingDto>(fullAccountUrl, authParam);
 
         var fullSpecializationsUrl = servicesUrl + $"/api/Specializations/specialization/{doctorContent.SpecializationId}/min";
         var fullOfficesUrl = officesUrl + $"/api/Offices/office/{doctorContent.OfficeId}";
@@ -195,19 +249,21 @@ public class AggregatorsService : IAggregatorsService
         var officeContent = await _crudClient.GetAsync<OfficeResponse>(fullOfficesUrl, authParam);
 
         var aggregated = _mapper.Map<DoctorProfileByReceptionistAggregatedDto>(doctorContent);
-        aggregated.Spectialization = specializationContent;
+        aggregated.PhotoUrl = accountContent.PhotoUrl;
+        aggregated.Specialization = specializationContent;
         aggregated.Office = _mapper.Map<OfficeAddressAggregatedDto>(officeContent);
 
         return aggregated;
     }
 
-    public async Task<IEnumerable<DoctorMinProfileAggregatedDto>> GetDoctorProfilesByPatientAsync(DoctorParameters parameters, string authParam)
+    public async Task<DoctorPaginationAggregatedDto> GetDoctorProfilesByPatientAsync(DoctorParameters parameters, string authParam)
     {
+        var photosUrl = _configuration.GetSection("ApiUrls").GetSection("IdentityServerUrl").Value;
         var officesUrl = _configuration.GetSection("ApiUrls").GetSection("OfficesUrl").Value;
         var profilesUrl = _configuration.GetSection("ApiUrls").GetSection("ProfilesUrl").Value;
         var servicesUrl = _configuration.GetSection("ApiUrls").GetSection("ServicesUrl").Value;
 
-        var fullDoctorUrl = profilesUrl + $"/api/Doctors?" + ToRequestParams(parameters);
+        var fullDoctorUrl = profilesUrl + $"/api/Doctors/list?" + ToRequestParams(parameters);
         var doctorsContent = await _crudClient.GetAsync<DoctorsPaginationOutgoingDto>(fullDoctorUrl, authParam);
 
         var specializationIds = doctorsContent.Entities
@@ -226,18 +282,21 @@ public class AggregatorsService : IAggregatorsService
         var officesContent = await _crudClient.PostAsync<GetOfficesByIdsModel, OfficesResponse>(fullOfficesUrl, officesDto, authParam);
         var mappedOfficesContent = _mapper.Map<IEnumerable<OfficeAddressAggregatedDto>>(officesContent.Offices);
 
-        var aggregated = new List<DoctorMinProfileAggregatedDto>();
+        var aggregatedDoctors = new List<DoctorMinProfileAggregatedDto>();
         foreach (var doctor in doctorsContent.Entities)
         {
             var mappedDoctor = _mapper.Map<DoctorMinProfileAggregatedDto>(doctor);
             mappedDoctor.Office = mappedOfficesContent
                 .Where(e => e.Id.Equals(doctor.OfficeId))
                 .FirstOrDefault();
-            mappedDoctor.Spectialization = specializationsContent
+            mappedDoctor.Specialization = specializationsContent
                 .Where(e => e.Id.Equals(doctor.SpecializationId))
                 .FirstOrDefault();
-            aggregated.Add(mappedDoctor);
+            aggregatedDoctors.Add(mappedDoctor);
         }
+        var aggregated = new DoctorPaginationAggregatedDto();
+        aggregated.Entities = aggregatedDoctors;
+        aggregated.PagesCount = doctorsContent.PagesCount;
         return aggregated;
     }
 
@@ -419,6 +478,23 @@ public class AggregatorsService : IAggregatorsService
         return aggregated;
     }
 
+    public async Task<ReceptionistProfileAggregatedDto> GetReceptionistByIdAsync(Guid id, string authParam)
+    {
+        var identityUrl = _configuration.GetSection("ApiUrls").GetSection("IdentityServerUrl").Value;
+        var profilesUrl = _configuration.GetSection("ApiUrls").GetSection("ProfilesUrl").Value;
+
+        var fullReceptionistUrl = profilesUrl + $"/api/Receptionists/receptionist/{id}";
+        var receptionistContent = await _crudClient.GetAsync<ReceptionistOutgoingDto>(fullReceptionistUrl, authParam);
+
+        var fullAccountUrl = identityUrl + $"/api/Auth/account/{receptionistContent.AccountId}/info";
+        var accountContent = await _crudClient.GetAsync<AccountOutgoingDto>(fullAccountUrl, authParam);
+
+        var aggregated = _mapper.Map<ReceptionistProfileAggregatedDto>(receptionistContent);
+        aggregated.PhotoUrl = accountContent.PhotoUrl;
+        return aggregated;
+    }
+
+    }
     public async Task UpdateDoctorAsync(Guid doctorId, UpdateDoctorAggregatedDto aggregatedDto, string authParam)
     {
         var identityUrl = _configuration.GetSection("ApiUrls").GetSection("IdentityServerUrl").Value;

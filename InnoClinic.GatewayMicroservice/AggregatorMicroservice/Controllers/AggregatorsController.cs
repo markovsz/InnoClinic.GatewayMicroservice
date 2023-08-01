@@ -39,8 +39,10 @@ namespace AggregatorMicroservice.Controllers
             return Ok(result);
         }
 
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
+        [ServiceFilter(typeof(ExtractRoleAttribute))]
         [HttpGet("Doctors/doctor/{id}")]
-        public async Task<IActionResult> GetDoctorProfileByIdAsync(Guid id, string roleName, string? authParam)
+        public async Task<IActionResult> GetDoctorProfileByIdAsync(Guid id, string? roleName, string? authParam)
         {
             if (roleName.Equals(nameof(UserRole.Patient)))
             {
@@ -60,10 +62,27 @@ namespace AggregatorMicroservice.Controllers
             return Forbid();
         }
         
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
+        [HttpGet("Patients/patient/{id}")]
+        public async Task<IActionResult> GetPatientProfileByIdAsync(Guid id, string? authParam)
+        {
+            var result = await _aggregatorsService.GetPatientProfileByIdAsync(id, authParam);
+            return Ok(result);
+        }
+
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
         [HttpGet("Doctors/profile")]
-        public async Task<IActionResult> GetPatientProfileAsync(string? authParam)
+        public async Task<IActionResult> GetDoctorProfileAsync(string? authParam)
         {
             var result = await _aggregatorsService.GetDoctorProfileAsync(authParam);
+            return Ok(result);
+        }
+
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
+        [HttpGet("Patients/profile")]
+        public async Task<IActionResult> GetPatientProfileAsync(string? authParam)
+        {
+            var result = await _aggregatorsService.GetPatientProfileByAccountIdAsync(authParam);
             return Ok(result);
         }
 
@@ -123,6 +142,14 @@ namespace AggregatorMicroservice.Controllers
         public async Task<IActionResult> GetReceptionistProfileAsync(string? authParam)
         {
             var receptionist = await _aggregatorsService.GetReceptionistProfileAsync(authParam);
+            return Ok(receptionist);
+        }
+
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
+        [HttpGet("Receptionists/receptionist/{id}")]
+        public async Task<IActionResult> GetReceptionistByIdAsync(Guid id, string? authParam)
+        {
+            var receptionist = await _aggregatorsService.GetReceptionistByIdAsync(id, authParam);
             return Ok(receptionist);
         }
         [HttpPut("Doctors/doctor/{doctorId}")]

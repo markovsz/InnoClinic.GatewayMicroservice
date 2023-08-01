@@ -9,7 +9,7 @@ public class DoctorMinProfileAggregatedDto
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string MiddleName { get; set; }
-    public SpecializationMinOutgoingDto Spectialization { get; set; }
+    public SpecializationMinOutgoingDto Specialization { get; set; }
     public OfficeAddressAggregatedDto Office { get; set; }
     public string Status { get; set; }
     public DateTime DateOfBirth { get; set; }
