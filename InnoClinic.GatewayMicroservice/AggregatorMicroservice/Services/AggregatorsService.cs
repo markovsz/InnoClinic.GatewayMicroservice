@@ -494,6 +494,35 @@ public class AggregatorsService : IAggregatorsService
         return aggregated;
     }
 
+    public async Task<IEnumerable<ReceptionistsListItemAggregatedDto>> GetReceptionistsAsync(string authParam)
+    {
+        var profilesUrl = _configuration.GetSection("ApiUrls").GetSection("ProfilesUrl").Value;
+        var officesUrl = _configuration.GetSection("ApiUrls").GetSection("OfficesUrl").Value;
+
+        var fullReceptionistUrl = profilesUrl + $"/api/Receptionists/list";
+        var receptionistsContent = await _crudClient.GetAsync<IEnumerable<ReceptionistOutgoingDto>>(fullReceptionistUrl, authParam);
+
+        var officesIds = receptionistsContent
+            .Select(e => e.OfficeId)
+            .Distinct()
+            .ToList();
+        var officesDto = new GetOfficesByIdsModel(officesIds);
+        var fullOfficesUrl = officesUrl + $"/api/Offices/ids";
+        var officesContent = await _crudClient.PostAsync<GetOfficesByIdsModel, OfficesResponse>(fullOfficesUrl, officesDto, authParam);
+        var mappedOfficesContent = _mapper.Map<IEnumerable<OfficeAddressAggregatedDto>>(officesContent.Offices);
+
+        var aggregatedReceptionists = new List<ReceptionistsListItemAggregatedDto>();
+        foreach (var receptionist in receptionistsContent)
+        {
+            var mappedDoctor = _mapper.Map<ReceptionistsListItemAggregatedDto>(receptionist);
+            mappedDoctor.Office = mappedOfficesContent
+                .Where(e => e.Id.Equals(receptionist.OfficeId))
+                .FirstOrDefault();
+            aggregatedReceptionists.Add(mappedDoctor);
+        }
+        return aggregatedReceptionists;
+    }
+
     }
     public async Task UpdateDoctorAsync(Guid doctorId, UpdateDoctorAggregatedDto aggregatedDto, string authParam)
     {

@@ -30,6 +30,7 @@ public class MappingProfile : Profile
 		CreateMap<DoctorOutgoingDto, DoctorProfileByDoctorAggregatedDto>();
 		CreateMap<DoctorOutgoingDto, DoctorProfileByReceptionistAggregatedDto>();
 		CreateMap<ReceptionistOutgoingDto, ReceptionistProfileAggregatedDto>();
+		CreateMap<ReceptionistOutgoingDto, ReceptionistsListItemAggregatedDto>();
 		CreateMap<UpdateReceptionistAggregatedDto, UpdateReceptionistIncomingDto>();
 		CreateMap<UpdatePatientAggregatedDto, UpdatePatientIncomingDto>();
 		CreateMap<UpdateDoctorAggregatedDto, UpdateDoctorIncomingDto>();

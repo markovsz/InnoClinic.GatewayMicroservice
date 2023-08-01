@@ -152,6 +152,14 @@ namespace AggregatorMicroservice.Controllers
             var receptionist = await _aggregatorsService.GetReceptionistByIdAsync(id, authParam);
             return Ok(receptionist);
         }
+
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
+        [HttpGet("Receptionists/list")]
+        public async Task<IActionResult> GetReceptionistsAsync(string? authParam)
+        {
+            var appointments = await _aggregatorsService.GetReceptionistsAsync(authParam);
+            return Ok(appointments);
+        }
         [HttpPut("Doctors/doctor/{doctorId}")]
         public async Task<IActionResult> UpdateDoctorAsync([FromBody] UpdateDoctorAggregatedDto updateDto, Guid doctorId, string? authParam)
         {
