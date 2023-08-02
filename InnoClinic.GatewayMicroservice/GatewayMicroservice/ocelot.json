@@ -14,45 +14,9 @@
       ]
     },
     {
-      "UpstreamPathTemplate": "/api/patients/patient/{patientId}",
-      "UpstreamHttpMethod": [ "Get" ],
-      "DownstreamPathTemplate": "/api/Patients/patient/{patientId}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7117
-        }
-      ]
-    },
-    {
-      "UpstreamPathTemplate": "/api/patients/profile",
-      "UpstreamHttpMethod": [ "Get" ],
-      "DownstreamPathTemplate": "/api/Patients/profile",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7117
-        }
-      ]
-    },
-    {
       "UpstreamPathTemplate": "/api/patients/list",
       "UpstreamHttpMethod": [ "Get" ],
       "DownstreamPathTemplate": "/api/Patients/list",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7117
-        }
-      ]
-    },
-    {
-      "UpstreamPathTemplate": "/api/patients/patient/{patientId}",
-      "UpstreamHttpMethod": [ "Put" ],
-      "DownstreamPathTemplate": "/api/Patients/patient/{patientId}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -79,18 +43,6 @@
 
 
     //Doctors
-    {
-      "UpstreamPathTemplate": "/api/doctors/doctor/{doctorId}",
-      "UpstreamHttpMethod": [ "Put" ],
-      "DownstreamPathTemplate": "/api/Doctors/doctor/{doctorId}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7117
-        }
-      ]
-    },
     {
       "UpstreamPathTemplate": "/api/doctors/doctor/{doctorId}",
       "UpstreamHttpMethod": [ "Delete" ],
@@ -121,54 +73,6 @@
 
 
     //Receptionists
-    {
-      "UpstreamPathTemplate": "/api/receptionists/receptionist/{receptionistId}",
-      "UpstreamHttpMethod": [ "Get" ],
-      "DownstreamPathTemplate": "/api/Receptionists/receptionist/{receptionistId}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7117
-        }
-      ]
-    },
-    {
-      "UpstreamPathTemplate": "/api/receptionists/profile",
-      "UpstreamHttpMethod": [ "Get" ],
-      "DownstreamPathTemplate": "/api/Receptionists/profile",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7117
-        }
-      ]
-    },
-    {
-      "UpstreamPathTemplate": "/api/receptionists/list",
-      "UpstreamHttpMethod": [ "Get" ],
-      "DownstreamPathTemplate": "/api/Receptionists/list",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7117
-        }
-      ]
-    },
-    {
-      "UpstreamPathTemplate": "/api/receptionists/receptionist/{receptionistId}",
-      "UpstreamHttpMethod": [ "Put" ],
-      "DownstreamPathTemplate": "/api/Receptionists/receptionist/{receptionistId}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7117
-        }
-      ]
-    },
     {
       "UpstreamPathTemplate": "/api/receptionists/receptionist/{receptionistId}",
       "UpstreamHttpMethod": [ "Delete" ],
@@ -372,21 +276,9 @@
 
     //Appointments
     {
-      "UpstreamPathTemplate": "/api/appointments/list",
+      "UpstreamPathTemplate": "/api/appointments/appointment/{appointmentId}/approve",
       "UpstreamHttpMethod": [ "Post" ],
-      "DownstreamPathTemplate": "/api/Appointments",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7097
-        }
-      ]
-    },
-    {
-      "UpstreamPathTemplate": "/api/appointments/{appointmentId}/approve",
-      "UpstreamHttpMethod": [ "Post" ],
-      "DownstreamPathTemplate": "/api/Appointments/{appointmentId}/approve",
+      "DownstreamPathTemplate": "/api/Appointments/appointment/{appointmentId}/approve",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -399,18 +291,6 @@
       "UpstreamPathTemplate": "/api/appointments/patient/{patientId}/history",
       "UpstreamHttpMethod": [ "Get" ],
       "DownstreamPathTemplate": "/api/Appointments/patient/{patientId}/history",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7097
-        }
-      ]
-    },
-    {
-      "UpstreamPathTemplate": "/api/appointments/{appointmentId}/reschedule",
-      "UpstreamHttpMethod": [ "Put" ],
-      "DownstreamPathTemplate": "/api/Appointments/{appointmentId}/reschedule",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -437,7 +317,7 @@
 
     //Results
     {
-      "UpstreamPathTemplate": "/api/results/list",
+      "UpstreamPathTemplate": "/api/results",
       "UpstreamHttpMethod": [ "Post" ],
       "DownstreamPathTemplate": "/api/Results",
       "DownstreamScheme": "https",
@@ -491,18 +371,6 @@
 
     //Offices
     {
-      "UpstreamPathTemplate": "/api/offices",
-      "UpstreamHttpMethod": [ "Post" ],
-      "DownstreamPathTemplate": "/api/Offices",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7292
-        }
-      ]
-    },
-    {
       "UpstreamPathTemplate": "/api/offices/list",
       "UpstreamHttpMethod": [ "Get" ],
       "DownstreamPathTemplate": "/api/Offices/list",
@@ -515,7 +383,7 @@
       ]
     },
     {
-      "UpstreamPathTemplate": "/api/offices/{officeId}",
+      "UpstreamPathTemplate": "/api/offices/office/{officeId}",
       "UpstreamHttpMethod": [ "Get" ],
       "DownstreamPathTemplate": "/api/Offices/office/{officeId}",
       "DownstreamScheme": "https",
@@ -611,6 +479,18 @@
       ]
     },
     {
+      "UpstreamPathTemplate": "/api/patients/patient/{id}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/Aggregators/Patients/patient/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7012
+        }
+      ]
+    },
+    {
       "UpstreamPathTemplate": "/api/doctors/doctor/{id}",
       "UpstreamHttpMethod": [ "Get" ],
       "DownstreamPathTemplate": "/api/Aggregators/Doctors/doctor/{id}",
@@ -695,6 +575,18 @@
       ]
     },
     {
+      "UpstreamPathTemplate": "/api/appointments",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamPathTemplate": "/api/Aggregators/Appointments",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7012
+        }
+      ]
+    },
+    {
       "UpstreamPathTemplate": "/api/doctors/profile",
       "UpstreamHttpMethod": [ "Get" ],
       "DownstreamPathTemplate": "/api/Aggregators/Doctors/profile",
@@ -709,7 +601,7 @@
     {
       "UpstreamPathTemplate": "/api/patients/patient/{id}",
       "UpstreamHttpMethod": [ "Put" ],
-      "DownstreamPathTemplate": "/api/Aggregators/Patient/{id}",
+      "DownstreamPathTemplate": "/api/Aggregators/Patients/patient/{id}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -719,9 +611,33 @@
       ]
     },
     {
-      "UpstreamPathTemplate": "/api/doctors/doctor/{id}",
+      "UpstreamPathTemplate": "/api/patients/profile",
       "UpstreamHttpMethod": [ "Put" ],
-      "DownstreamPathTemplate": "/api/Aggregators/Doctor/{id}",
+      "DownstreamPathTemplate": "/api/Aggregators/Patients/profile",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7012
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/receptionists/profile",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/Aggregators/Receptionists/profile",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7012
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/receptionists/receptionist/{id}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/Aggregators/Receptionists/receptionist/{id}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -733,7 +649,7 @@
     {
       "UpstreamPathTemplate": "/api/receptionists/receptionist/{id}",
       "UpstreamHttpMethod": [ "Put" ],
-      "DownstreamPathTemplate": "/api/Aggregators/Receptionist/{id}",
+      "DownstreamPathTemplate": "/api/Aggregators/Receptionists/receptionist/{id}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -746,6 +662,66 @@
       "UpstreamPathTemplate": "/api/offices/office/{id}",
       "UpstreamHttpMethod": [ "Put" ],
       "DownstreamPathTemplate": "/api/Aggregators/Offices/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7012
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/receptionists/list",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/Aggregators/Receptionists/list",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7012
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/appointments/time_slots/available/list",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/Aggregators/timeSlots/list",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7012
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/doctors/doctor/{id}",
+      "UpstreamHttpMethod": [ "Put" ],
+      "DownstreamPathTemplate": "/api/Aggregators/Doctors/doctor/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7012
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/appointments/appointment/{appointmentId}/reschedule",
+      "UpstreamHttpMethod": [ "Put" ],
+      "DownstreamPathTemplate": "/api/Aggregators/Appointments/appointment/{appointmentId}/reschedule",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7012
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/patients/profile",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/Aggregators/Patients/profile",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
