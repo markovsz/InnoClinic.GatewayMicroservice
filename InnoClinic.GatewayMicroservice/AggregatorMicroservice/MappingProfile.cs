@@ -1,11 +1,15 @@
 ﻿using AggregatorMicroservice.Models.DTOs.Aggregated;
+using AggregatorMicroservice.Models.Parameters;
 using AutoMapper;
+using InnoClinic.SharedModels.DTOs.Appointments.Incoming;
 using InnoClinic.SharedModels.DTOs.Appointments.Outgoing;
+using InnoClinic.SharedModels.DTOs.Appointments.RequestParameters;
 using InnoClinic.SharedModels.DTOs.Identity.Incoming;
 using InnoClinic.SharedModels.DTOs.Offices.Incoming.Commands;
 using InnoClinic.SharedModels.DTOs.Offices.Outgoing;
 using InnoClinic.SharedModels.DTOs.Profiles.Incoming;
 using InnoClinic.SharedModels.DTOs.Profiles.Outgoing;
+using InnoClinic.SharedModels.DTOs.Services.Outgoing;
 
 namespace AggregatorMicroservice;
 
@@ -15,6 +19,7 @@ public class MappingProfile : Profile
 	{
 		CreateMap<CreateOfficeAggregatedDto, CreateOfficeModel>();
 		CreateMap<OfficeAddressResponse, OfficeAddressAggregatedDto>();
+		CreateMap<OfficeResponse, OfficeAddressAggregatedDto>();
 		CreateMap<CreateAppointmentAggregatedDto, AppointmentIncomingDto>();
 		CreateMap<CreateAccountAggregatedDto, SignUpIncomingDto>();
 		CreateMap<CreatePatientAggregatedDto, PatientIncomingDto>();
