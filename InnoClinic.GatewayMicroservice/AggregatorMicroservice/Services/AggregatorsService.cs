@@ -1,23 +1,24 @@
-﻿using AggregatorMicroservice.Models.DTOs.Aggregated;
+﻿using AggregatorMicroservice.Models.DTOs;
+using AggregatorMicroservice.Models.DTOs.Aggregated;
+using AggregatorMicroservice.Models.Parameters;
 using AggregatorMicroservice.Services.Abstractions;
 using AutoMapper;
+using InnoClinic.SharedModels.DTOs.Appointments.Incoming;
 using InnoClinic.SharedModels.DTOs.Appointments.Outgoing;
-using InnoClinic.SharedModels.DTOs.Documents.Incoming;
-using InnoClinic.SharedModels.DTOs.Identity.Incoming;
-using InnoClinic.SharedModels.DTOs.Profiles.Incoming;
-using InnoClinic.SharedModels.DTOs.Profiles.Outgoing;
-using InnoClinic.SharedModels.DTOs.Services.Outgoing;
-using InnoClinic.SharedModels.DTOs.Offices.Outgoing;
-using Newtonsoft.Json;
-using System.Web;
 using InnoClinic.SharedModels.DTOs.Appointments.RequestParameters;
-using InnoClinic.SharedModels.DTOs.Profiles.RequestParameters;
+using InnoClinic.SharedModels.DTOs.Documents.Incoming;
 using InnoClinic.SharedModels.DTOs.Documents.Outgoing;
+using InnoClinic.SharedModels.DTOs.Identity.Incoming;
 using InnoClinic.SharedModels.DTOs.Identity.Outgoing;
-using System.Threading.Tasks;
-using System;
 using InnoClinic.SharedModels.DTOs.Offices.Incoming.Commands;
 using InnoClinic.SharedModels.DTOs.Offices.Incoming.Queries;
+using InnoClinic.SharedModels.DTOs.Offices.Outgoing;
+using InnoClinic.SharedModels.DTOs.Profiles.Incoming;
+using InnoClinic.SharedModels.DTOs.Profiles.Outgoing;
+using InnoClinic.SharedModels.DTOs.Profiles.RequestParameters;
+using InnoClinic.SharedModels.DTOs.Services.Outgoing;
+using Newtonsoft.Json;
+using System.Web;
 
 namespace AggregatorMicroservice.Services;
 
@@ -68,9 +69,11 @@ public class AggregatorsService : IAggregatorsService
     {
         var appointmentsUrl = _configuration.GetSection("ApiUrls").GetSection("AppointmentsUrl").Value;
         var profilesUrl = _configuration.GetSection("ApiUrls").GetSection("ProfilesUrl").Value;
+        var specializatiosUrl = _configuration.GetSection("ApiUrls").GetSection("ServicesUrl").Value;
 
         var fullAppointmentsUrl = appointmentsUrl + "/api/Appointments/schedule?" + ToRequestParams(parameters);
         var fullProfilesUrl = profilesUrl + $"/api/Patients/ids";
+        var fullSpecializationsUrl = specializatiosUrl + $"/api/Specializations/ids";
 
         var appointmentsContent = await _crudClient.GetAsync<IEnumerable<AppointmentScheduleByDoctorOutgoingDto>>(fullAppointmentsUrl, authParam);
         var patientIds = appointmentsContent
@@ -78,16 +81,28 @@ public class AggregatorsService : IAggregatorsService
             .Distinct()
             .ToList();
         var patientsContent = await _crudClient.PostAsync<IEnumerable<Guid>, IEnumerable<PatientOutgoingDto>>(fullProfilesUrl, patientIds, authParam);
+        
+        var specializationIds = appointmentsContent
+            .Select(e => e.SpecializationId)
+            .Distinct()
+            .ToList();
+        var specializationsContent = await _crudClient.PostAsync<IEnumerable<Guid>, IEnumerable<SpecializationMinOutgoingDto>>(fullSpecializationsUrl, specializationIds, authParam);
+
         var aggregated = new List<AppointmentScheduleByDoctorAggregatedDto>();
         foreach (var appointment in appointmentsContent)
         {
             var patient = patientsContent
                 .Where(e => e.Id.Equals(appointment.PatientId))
                 .FirstOrDefault();
+            var specialization = specializationsContent
+                .Where(e => e.Id.Equals(appointment.SpecializationId))
+                .FirstOrDefault();
+
             var agregatedAppointment = _mapper.Map<AppointmentScheduleByDoctorAggregatedDto>(appointment);
             agregatedAppointment.PatientFirstName = patient.FirstName;
             agregatedAppointment.PatientLastName = patient.LastName;
             agregatedAppointment.PatientMiddleName = patient.MiddleName;
+            agregatedAppointment.SpecializationName = specialization.Name;
             aggregated.Add(agregatedAppointment);
         }
         return aggregated;
@@ -164,7 +179,6 @@ public class AggregatorsService : IAggregatorsService
         var fullMinSpecializationUrl = servicesUrl + $"/api/Specializations/specialization/{doctorContent.SpecializationId}/min";
         var fullSpecializationUrl = servicesUrl + $"/api/Specializations/specialization/{doctorContent.SpecializationId}";
         var fullOfficesUrl = officesUrl + $"/api/Offices/office/{doctorContent.OfficeId}";
-        var specializationContent = await _crudClient.GetAsync<SpecializationMinOutgoingDto>(fullSpecializationsUrl, authParam);
         var officeContent = await _crudClient.GetAsync<OfficeResponse>(fullOfficesUrl, authParam);
         var fullSpecializationsContent = await _crudClient.GetAsync<SpecializationOutgoingDto>(fullSpecializationUrl, authParam);
         var specializationContent = _mapper.Map<SpecializationMinOutgoingDto>(fullSpecializationsContent);
@@ -580,7 +594,7 @@ public class AggregatorsService : IAggregatorsService
                 .FirstOrDefault();
 
             timeSlotSizes.Add(timeSlotSize);
-    }
+        }
 
         var minTimeSlotSize = 10;
         var categoryTimeSlotSize = serviceContent.Category.TimeSlotSize;
@@ -661,7 +675,7 @@ public class AggregatorsService : IAggregatorsService
                 .FirstOrDefault();
 
             timeSlotSizes.Add(timeSlotSize);
-    }
+        }
 
         var minTimeSlotSize = 10;
         var categoryTimeSlotSize = service.Category.TimeSlotSize;
