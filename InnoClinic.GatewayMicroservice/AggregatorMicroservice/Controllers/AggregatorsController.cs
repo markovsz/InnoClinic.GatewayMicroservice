@@ -182,6 +182,13 @@ namespace AggregatorMicroservice.Controllers
             await _aggregatorsService.UpdatePatientAsync(patientId, updateDto, authParam);
             return NoContent();
         }
+
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
+        [HttpPut("Appointments/appointment/{appointmentId}/reschedule")]
+        public async Task<IActionResult> RescheduleAppointmentAsync([FromBody] RescheduleAppointmentAggregatedDto updateDto, Guid appointmentId, string? authParam)
+        {
+            await _aggregatorsService.RescheduleAppointmentAsync(updateDto, appointmentId, authParam);
+            return NoContent();
         }
     }
 }

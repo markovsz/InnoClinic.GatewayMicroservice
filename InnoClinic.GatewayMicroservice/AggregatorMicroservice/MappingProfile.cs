@@ -36,5 +36,6 @@ public class MappingProfile : Profile
 		CreateMap<UpdateDoctorAggregatedDto, UpdateDoctorIncomingDto>();
 		CreateMap<TimeSlotAggregatedParameters, TimeSlotParameters>();
 		CreateMap<PatientOutgoingDto, PatientProfileAggregatedDto>();
+		CreateMap<RescheduleAppointmentAggregatedDto, RescheduleAppointmentIncomingDto>();
 	}
 }

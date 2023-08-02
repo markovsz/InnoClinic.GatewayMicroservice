@@ -522,6 +522,32 @@ public class AggregatorsService : IAggregatorsService
         }
         return aggregatedReceptionists;
     }
+
+    public async Task RescheduleAppointmentAsync(RescheduleAppointmentAggregatedDto incomingDto, Guid appointmentId, string authParam)
+    {
+        var appointmentsUrl = _configuration.GetSection("ApiUrls").GetSection("AppointmentsUrl").Value;
+        var doctorsUrl = _configuration.GetSection("ApiUrls").GetSection("ProfilesUrl").Value;
+
+        var timeSlotDto = new CheckTimeSlotDto();
+        timeSlotDto.DateTime = incomingDto.DateTime;
+        timeSlotDto.DoctorId = incomingDto.DoctorId;
+        timeSlotDto.ServiceId = incomingDto.ServiceId;
+        bool isValidTimeSlot = await CheckTimeSlotAsync(timeSlotDto, authParam);
+
+        if (!isValidTimeSlot)
+            throw new Exception("invalid time slot");
+
+        var fullDoctorsUrl = doctorsUrl + $"/api/Doctors/doctor/{timeSlotDto.DoctorId}";
+        var doctor = await _crudClient.GetAsync<DoctorOutgoingDto>(fullDoctorsUrl, authParam);
+
+        var fullAppointmentUrl = appointmentsUrl + $"/api/Appointments/appointment/{appointmentId}/reschedule";
+        var rescheduleAppointmentDto = _mapper.Map<RescheduleAppointmentIncomingDto>(incomingDto);
+        rescheduleAppointmentDto.DoctorFirstName = doctor.FirstName;
+        rescheduleAppointmentDto.DoctorLastName = doctor.LastName;
+        rescheduleAppointmentDto.DoctorMiddleName = doctor.MiddleName;
+        await _crudClient.PutAsync<RescheduleAppointmentIncomingDto>(fullAppointmentUrl, rescheduleAppointmentDto, authParam);
+    }
+
     public async Task<IEnumerable<DateTime>> GetTimeSlotsAsync(TimeSlotAggregatedParameters parameters, string authParam)
     {
         var servicesUrl = _configuration.GetSection("ApiUrls").GetSection("ServicesUrl").Value;
