@@ -138,6 +138,18 @@
         }
       ]
     },
+    {
+      "UpstreamPathTemplate": "/api/auth/account",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/Auth/account",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7239
+        }
+      ]
+    },
 
 
 
@@ -172,6 +184,18 @@
       "UpstreamPathTemplate": "/api/services/service/{serviceId}",
       "UpstreamHttpMethod": [ "Get" ],
       "DownstreamPathTemplate": "/api/Services/service/{serviceId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7086
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/services/service/{serviceId}/min",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/Services/service/{serviceId}/min",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -248,7 +272,7 @@
     {
       "UpstreamPathTemplate": "/api/specializations/specialization/{specializationId}",
       "UpstreamHttpMethod": [ "Put" ],
-      "DownstreamPathTemplate": "/api/Specializations/{specializationsId}",
+      "DownstreamPathTemplate": "/api/Specializations/{specializationId}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
