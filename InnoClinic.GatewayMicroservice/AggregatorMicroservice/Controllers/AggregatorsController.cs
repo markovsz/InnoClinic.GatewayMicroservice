@@ -160,6 +160,16 @@ namespace AggregatorMicroservice.Controllers
             var appointments = await _aggregatorsService.GetReceptionistsAsync(authParam);
             return Ok(appointments);
         }
+
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
+        [HttpGet("timeSlots/list")]
+        public async Task<IActionResult> GetTimeSlotsAsync([FromQuery] TimeSlotAggregatedParameters parameters, string? authParam)
+        {
+            var timeSlots = await _aggregatorsService.GetTimeSlotsAsync(parameters, authParam);
+            return Ok(timeSlots);
+        }
+
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
         [HttpPut("Doctors/doctor/{doctorId}")]
         public async Task<IActionResult> UpdateDoctorAsync([FromBody] UpdateDoctorAggregatedDto updateDto, Guid doctorId, string? authParam)
         {
