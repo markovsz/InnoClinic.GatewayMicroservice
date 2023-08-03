@@ -1,5 +1,7 @@
-﻿using AggregatorMicroservice.Services.Abstractions;
+﻿using AggregatorMicroservice.Exceptions;
+using AggregatorMicroservice.Services.Abstractions;
 using Newtonsoft.Json;
+using System.Net;
 using System.Text;
 
 namespace AggregatorMicroservice.Services;
@@ -24,8 +26,7 @@ public class HttpCrudClient : IHttpCrudClient
         if(authParam is not null)
             httpContext.DefaultRequestHeaders.Add("Authorization", "Bearer " + authParam);
         var response = await httpContext.SendAsync(requestContent);
-        if (!response.IsSuccessStatusCode)
-            throw new Exception(await response.Content.ReadAsStringAsync());
+        ThrowIfUnsuccessful(response);
         return response;
     }
 
@@ -48,8 +49,7 @@ public class HttpCrudClient : IHttpCrudClient
         if (authParam is not null)
             httpContext.DefaultRequestHeaders.Add("Authorization", "Bearer " + authParam);
         var response = await httpContext.GetAsync(uri);
-        if (!response.IsSuccessStatusCode)
-            throw new Exception();
+        ThrowIfUnsuccessful(response);
         var responseBody = await response.Content.ReadAsStringAsync();
         var content = JsonConvert.DeserializeObject<TOut>(responseBody);
         return content;
@@ -66,7 +66,19 @@ public class HttpCrudClient : IHttpCrudClient
         if (authParam is not null)
             httpContext.DefaultRequestHeaders.Add("Authorization", "Bearer " + authParam);
         var response = await httpContext.SendAsync(requestContent);
-        if (!response.IsSuccessStatusCode)
-            throw new Exception(await response.Content.ReadAsStringAsync());
+        ThrowIfUnsuccessful(response);
+    }
+
+    private void ThrowIfUnsuccessful(HttpResponseMessage message)
+    {
+        if (message.IsSuccessStatusCode) return;
+        throw message.StatusCode switch
+        {
+            HttpStatusCode.BadRequest => new BadHttpRequestException(message.ReasonPhrase),
+            HttpStatusCode.Unauthorized => new UnauthorizedAccessException(message.ReasonPhrase),
+            HttpStatusCode.Forbidden => new ForbiddenException(message.ReasonPhrase),
+            HttpStatusCode.NotFound => new NotFoundException(message.ReasonPhrase),
+            _ => new Exception(message.ReasonPhrase)
+        };
     }
 }

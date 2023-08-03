@@ -758,6 +758,21 @@ public class AggregatorsService : IAggregatorsService
     }
 
 
+    public async Task UpdateOfficeAsync(Guid officeId, UpdateOfficeAggregatedDto incomingDto, string authParam)
+    {
+        var officesUrl = _configuration.GetSection("ApiUrls").GetSection("OfficesUrl").Value;
+        var documentsUrl = _configuration.GetSection("ApiUrls").GetSection("DocumentsUrl").Value;
+
+        var fullPhotosUrl = documentsUrl + $"/api/Documents/Photos";
+        var photoDto = incomingDto.Photo;
+        var photoCreatedDto = await _crudClient.PostAsync<DocumentIncomingDto, DocumentCreatedOutgoingDto>(fullPhotosUrl, photoDto, authParam);
+
+        var fullOfficesUrl = officesUrl + $"/api/Offices/{officeId}";
+        var office = _mapper.Map<UpdateOfficeModel>(incomingDto);
+        office.PhotoUrl = photoCreatedDto.FilePath;
+        await _crudClient.PutAsync<UpdateOfficeModel>(fullOfficesUrl, office, authParam);
+    }
+
 
     private string ToRequestParams<TParam>(TParam param)
     {
