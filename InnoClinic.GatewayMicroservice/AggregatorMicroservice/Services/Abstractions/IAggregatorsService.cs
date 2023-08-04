@@ -1,4 +1,5 @@
 ﻿using AggregatorMicroservice.Models.DTOs.Aggregated;
+using AggregatorMicroservice.Models.Parameters;
 using InnoClinic.SharedModels.DTOs.Appointments.RequestParameters;
 using InnoClinic.SharedModels.DTOs.Profiles.RequestParameters;
 
@@ -11,10 +12,7 @@ public interface IAggregatorsService
     Task<Guid> CreateDoctorAsync(CreateDoctorAggregatedDto incomingDto, string authParam);
     Task<Guid> CreateReceptionistAsync(CreateReceptionistAggregatedDto incomingDto, string authParam);
     Task<Guid> CreateOfficeAsync(CreateOfficeAggregatedDto incomingDto, string authParam);
-    Task UpdatePatientAsync(Guid id, UpdatePatientAggregatedDto incomingDto, string authParam);
-    Task UpdateDoctorAsync(Guid id, UpdateDoctorAggregatedDto incomingDto, string authParam);
-    Task UpdateReceptionistAsync(Guid id, UpdateReceptionistAggregatedDto incomingDto, string authParam);
-    Task UpdateOfficeAsync(Guid id, UpdateOfficeAggregatedDto incomingDto, string authParam);
+    Task<Guid> CreateAppointmentAsync(CreateAppointmentAggregatedDto incomingDto, string authParam);
     Task<IEnumerable<AppointmentByReceptionistAggregatedDto>> GetAppointmentsByReceptionistAsync(AppointmentParameters parameters, string authParam);
     Task<IEnumerable<AppointmentScheduleByDoctorAggregatedDto>> GetAppointmentsScheduleByDoctorAsync(ScheduleParameters parameters, string authParam);
     Task<ResultAggregatedDto> GetResultByIdAsync(Guid resultId, string authParam);
@@ -22,5 +20,15 @@ public interface IAggregatorsService
     Task<DoctorProfileByDoctorAggregatedDto> GetDoctorProfileByDoctorAsync(Guid doctorId, string authParam);
     Task<DoctorProfileByDoctorAggregatedDto> GetDoctorProfileAsync(string authParam);
     Task<DoctorProfileByReceptionistAggregatedDto> GetDoctorProfileByReceptionistAsync(Guid doctorId, string authParam);
-    Task<IEnumerable<DoctorMinProfileAggregatedDto>> GetDoctorProfilesByPatientAsync(DoctorParameters parameters, string authParam);
+    Task<DoctorPaginationAggregatedDto> GetDoctorProfilesByPatientAsync(DoctorParameters parameters, string authParam);
+    Task<PatientProfileAggregatedDto> GetPatientProfileByIdAsync(Guid doctorId, string authParam);
+    Task<PatientProfileAggregatedDto> GetPatientProfileByAccountIdAsync(string authParam);
+    Task<ReceptionistProfileAggregatedDto> GetReceptionistByIdAsync(Guid id, string authParam);
+    Task<ReceptionistProfileAggregatedDto> GetReceptionistProfileAsync(string authParam);
+    Task<IEnumerable<ReceptionistsListItemAggregatedDto>> GetReceptionistsAsync(string authParam);
+    Task<IEnumerable<DateTime>> GetTimeSlotsAsync(TimeSlotAggregatedParameters parameters, string authParam);
+    Task RescheduleAppointmentAsync(RescheduleAppointmentAggregatedDto incomingDto, Guid appointmentId, string authParam);
+    Task UpdateDoctorAsync(Guid doctorId, UpdateDoctorAggregatedDto aggregatedDto, string authParam);
+    Task UpdateReceptionistAsync(Guid receptionistId, UpdateReceptionistAggregatedDto aggregatedDto, string authParam);
+    Task UpdatePatientAsync(Guid patientId, UpdatePatientAggregatedDto aggregatedDto, string authParam);
 }

@@ -1,6 +1,7 @@
 ﻿using AggregatorMicroservice.FilterAttributes;
 using AggregatorMicroservice.Models.DTOs.Aggregated;
 using AggregatorMicroservice.Models.Enums;
+using AggregatorMicroservice.Models.Parameters;
 using AggregatorMicroservice.Services.Abstractions;
 using InnoClinic.SharedModels.DTOs.Appointments.RequestParameters;
 using InnoClinic.SharedModels.DTOs.Profiles.RequestParameters;
@@ -18,6 +19,7 @@ namespace AggregatorMicroservice.Controllers
             _aggregatorsService = aggregatorsService;
         }
 
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
         [HttpGet("Appointments/list")]
         public async Task<IActionResult> GetAppointmentsByReceptionistAsync([FromQuery] AppointmentParameters parameters, string? authParam)
         {
@@ -25,6 +27,7 @@ namespace AggregatorMicroservice.Controllers
             return Ok(appointments);
         }
 
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
         [HttpGet("Appointments/schedule")]
         public async Task<IActionResult> GetAppointmentsScheduleByDoctorAsync([FromQuery] ScheduleParameters parameters, string? authParam)
         {
@@ -32,6 +35,7 @@ namespace AggregatorMicroservice.Controllers
             return Ok(appointments);
         }
 
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
         [HttpGet("Results/{id}")]
         public async Task<IActionResult> GetResultByIdAsync(Guid id, string? authParam)
         {
@@ -39,8 +43,10 @@ namespace AggregatorMicroservice.Controllers
             return Ok(result);
         }
 
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
+        [ServiceFilter(typeof(ExtractRoleAttribute))]
         [HttpGet("Doctors/doctor/{id}")]
-        public async Task<IActionResult> GetDoctorProfileByIdAsync(Guid id, string roleName, string? authParam)
+        public async Task<IActionResult> GetDoctorProfileByIdAsync(Guid id, string? roleName, string? authParam)
         {
             if (roleName.Equals(nameof(UserRole.Patient)))
             {
@@ -59,11 +65,28 @@ namespace AggregatorMicroservice.Controllers
             }
             return Forbid();
         }
-        
+
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
+        [HttpGet("Patients/patient/{id}")]
+        public async Task<IActionResult> GetPatientProfileByIdAsync(Guid id, string? authParam)
+        {
+            var result = await _aggregatorsService.GetPatientProfileByIdAsync(id, authParam);
+            return Ok(result);
+        }
+
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
         [HttpGet("Doctors/profile")]
-        public async Task<IActionResult> GetPatientProfileAsync(string? authParam)
+        public async Task<IActionResult> GetDoctorProfileAsync(string? authParam)
         {
             var result = await _aggregatorsService.GetDoctorProfileAsync(authParam);
+            return Ok(result);
+        }
+
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
+        [HttpGet("Patients/profile")]
+        public async Task<IActionResult> GetPatientProfileAsync(string? authParam)
+        {
+            var result = await _aggregatorsService.GetPatientProfileByAccountIdAsync(authParam);
             return Ok(result);
         }
 
@@ -82,6 +105,7 @@ namespace AggregatorMicroservice.Controllers
             return Ok();
         }
 
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
         [HttpPost("Patient")]
         public async Task<IActionResult> CreatePatientAsync(CreatePatientAggregatedDto aggregatedDto, string? authParam)
         {
@@ -89,6 +113,7 @@ namespace AggregatorMicroservice.Controllers
             return Created("", id);
         }
 
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
         [HttpPost("Doctor")]
         public async Task<IActionResult> CreateDoctorAsync(CreateDoctorAggregatedDto aggregatedDto, string? authParam)
         {
@@ -96,13 +121,15 @@ namespace AggregatorMicroservice.Controllers
             return Created("", id);
         }
 
-        [HttpPost("Receptionist")]
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
+        [HttpPost("Receptionists")]
         public async Task<IActionResult> CreateReceptionistAsync(CreateReceptionistAggregatedDto aggregatedDto, string? authParam)
         {
             var id = await _aggregatorsService.CreateReceptionistAsync(aggregatedDto, authParam);
             return Created("", id);
         }
 
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
         [HttpPost("Offices")]
         public async Task<IActionResult> CreateOfficeAsync(CreateOfficeAggregatedDto aggregatedDto, string? authParam)
         {
@@ -110,31 +137,75 @@ namespace AggregatorMicroservice.Controllers
             return Created("", id);
         }
 
-        [HttpPut("Patient/{id}")]
-        public async Task<IActionResult> UpdatePatientAsync(Guid id, UpdatePatientAggregatedDto aggregatedDto, string? authParam)
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
+        [HttpPost("Appointments")]
+        public async Task<IActionResult> CreateAppointmentAsync(CreateAppointmentAggregatedDto aggregatedDto, string? authParam)
         {
-            await _aggregatorsService.UpdatePatientAsync(id, aggregatedDto, authParam);
+            var id = await _aggregatorsService.CreateAppointmentAsync(aggregatedDto, authParam);
+            return Created("", id);
+        }
+
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
+        [HttpGet("Receptionists/profile")]
+        public async Task<IActionResult> GetReceptionistProfileAsync(string? authParam)
+        {
+            var receptionist = await _aggregatorsService.GetReceptionistProfileAsync(authParam);
+            return Ok(receptionist);
+        }
+
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
+        [HttpGet("Receptionists/receptionist/{id}")]
+        public async Task<IActionResult> GetReceptionistByIdAsync(Guid id, string? authParam)
+        {
+            var receptionist = await _aggregatorsService.GetReceptionistByIdAsync(id, authParam);
+            return Ok(receptionist);
+        }
+
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
+        [HttpGet("Receptionists/list")]
+        public async Task<IActionResult> GetReceptionistsAsync(string? authParam)
+        {
+            var appointments = await _aggregatorsService.GetReceptionistsAsync(authParam);
+            return Ok(appointments);
+        }
+
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
+        [HttpGet("timeSlots/list")]
+        public async Task<IActionResult> GetTimeSlotsAsync([FromQuery] TimeSlotAggregatedParameters parameters, string? authParam)
+        {
+            var timeSlots = await _aggregatorsService.GetTimeSlotsAsync(parameters, authParam);
+            return Ok(timeSlots);
+        }
+
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
+        [HttpPut("Doctors/doctor/{doctorId}")]
+        public async Task<IActionResult> UpdateDoctorAsync([FromBody] UpdateDoctorAggregatedDto updateDto, Guid doctorId, string? authParam)
+        {
+            await _aggregatorsService.UpdateDoctorAsync(doctorId, updateDto, authParam);
             return NoContent();
         }
 
-        [HttpPut("Doctor/{id}")]
-        public async Task<IActionResult> UpdateDoctorAsync(Guid id, UpdateDoctorAggregatedDto aggregatedDto, string? authParam)
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
+        [HttpPut("Receptionists/receptionist/{receptionistId}")]
+        public async Task<IActionResult> UpdateDoctorAsync([FromBody] UpdateReceptionistAggregatedDto updateDto, Guid receptionistId, string? authParam)
         {
-            await _aggregatorsService.UpdateDoctorAsync(id, aggregatedDto, authParam);
+            await _aggregatorsService.UpdateReceptionistAsync(receptionistId, updateDto, authParam);
             return NoContent();
         }
 
-        [HttpPut("Receptionist/{id}")]
-        public async Task<IActionResult> UpdateReceptionistAsync(Guid id, UpdateReceptionistAggregatedDto aggregatedDto, string? authParam)
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
+        [HttpPut("Patients/patient/{patientId}")]
+        public async Task<IActionResult> UpdatePatientAsync([FromBody] UpdatePatientAggregatedDto updateDto, Guid patientId, string? authParam)
         {
-            await _aggregatorsService.UpdateReceptionistAsync(id, aggregatedDto, authParam);
+            await _aggregatorsService.UpdatePatientAsync(patientId, updateDto, authParam);
             return NoContent();
         }
 
-        [HttpPut("Offices/{id}")]
-        public async Task<IActionResult> UpdateOfficeAsync(Guid id, UpdateOfficeAggregatedDto aggregatedDto, string? authParam)
+        [ServiceFilter(typeof(ExtractJwtTokenAttribute))]
+        [HttpPut("Appointments/appointment/{appointmentId}/reschedule")]
+        public async Task<IActionResult> RescheduleAppointmentAsync([FromBody] RescheduleAppointmentAggregatedDto updateDto, Guid appointmentId, string? authParam)
         {
-            await _aggregatorsService.UpdateOfficeAsync(id, aggregatedDto, authParam);
+            await _aggregatorsService.RescheduleAppointmentAsync(updateDto, appointmentId, authParam);
             return NoContent();
         }
     }
